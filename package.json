@@ -1,0 +1,11 @@
+{
+  "name": "react-native-interactable-web",
+  "version": "0.1.0",
+  "description": "A port of react-native-interactable to make it work on the web",
+  "main": "rniw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Javier Marquez",
+  "license": "MIT"
+}
