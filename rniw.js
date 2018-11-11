@@ -29,7 +29,7 @@ class InteractableView extends Component {
 		frictionAreas: [],
 		onSnap: function(){},
 		onSnapStart: function(){},
-		onEnd: function(){},
+		onStop: function(){},
 		onDrag: function(){},
 	}
 
