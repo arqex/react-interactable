@@ -4,12 +4,10 @@ export default class PhysicsAnchorBehavior extends PhysicsBehavior {
 	executeFrameWithDeltaTime( deltaTime, physicsObject ) {
 		if (!deltaTime) return;
 
-		let dx = this.anchorPoint.x - this.target.getTranslationX();
-		let dy = this.anchorPoint.y - this.target.getTranslationY();
+		let {x,y} = this.target.getTranslation()
 
-		physicsObject.velocity = {
-			x: dx / deltaTime,
-			y: dy / deltaTime
-		};
+		// Velocity = dx / deltaTime
+		physicsObject.vx = (this.anchorPoint.x - x) / deltaTime
+		physicsObject.vy = (this.anchorPoint.y - y) / deltaTime
 	}
 }

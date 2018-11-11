@@ -12,50 +12,34 @@ export default class PhysicsBounceBehavior extends PhysicsBehavior {
 		this.applyLimits();
 
 		let { minPoint, maxPoint, bounce, target } = this
+		let { x, y } = this.getTranslation()
+		let { vx, vy } = physicsObject
 
-		if (minPoint.x === target.getTranslationX() && physicsObject.velocity.x < 0.0) {
-			physicsObject.velocity( 
-				-physicsObject.velocity.x * bounce,
-				physicsObject.velocity.y
-			)
+		if (minPoint.x === x && vx < 0) {
+			physicsObject.vx = -vx * bounce
 			doHaptic();
 		}
-		if (minPoint.y === target.getTranslationY() && physicsObject.velocity.y < 0.0) {
-			physicsObject.velocity( 
-				physicsObject.velocity.x,
-				-physicsObject.velocity.y * bounce
-			)
+		if (minPoint.y === y && vy < 0) {
+			physicsObject.vy= -vy * bounce
 			doHaptic();
 		}
-		if (maxPoint.x === target.getTranslationX() && physicsObject.velocity.x > 0.0) {
-			physicsObject.velocity( 
-				-physicsObject.velocity.x * bounce,
-				physicsObject.velocity.y
-			)
+		if (maxPoint.x === x && vx > 0) {
+			physicsObject.vx = -vx * bounce
 			doHaptic();
 		}
-		if (maxPoint.y === target.getTranslationY() && physicsObject.velocity.y > 0.0) {
-			physicsObject.velocity( 
-				physicsObject.velocity.x,
-				-physicsObject.velocity.y * bounce
-			)
+		if (maxPoint.y === y && vy > 0) {
+			physicsObject.vy = -vy * bounce
 			doHaptic();
 		}
 	}
 
 	applyLimits() {
 		let {minPoint, maxPoint, target } = this
-		if (minPoint.x > target.getTranslationX()) {
-			target.setTranslationX(minPoint.x);
-		}
-		if (minPoint.y > target.getTranslationY()) {
-			target.setTranslationY(minPoint.y);
-		}
-		if (maxPoint.x < target.getTranslationX()) {
-			target.setTranslationX(maxPoint.x);
-		}
-		if (maxPoint.y < target.getTranslationY()) {
-			target.setTranslationY(maxPoint.y);
-		}
+		let {x,y} = target.getTranslation()
+
+		if (minPoint.x > x) target.setTranslationX(minPoint.x);
+		if (minPoint.y > y) target.setTranslationY(minPoint.y);
+		if (maxPoint.x < x) target.setTranslationX(maxPoint.x);
+		if (maxPoint.y < y) target.setTranslationY(maxPoint.y);
 	}
 }

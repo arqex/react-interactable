@@ -28,9 +28,7 @@ export default class PhysicsGravityWell extends PhysicsBehavior {
 		let ax = dx / dr * a;
 		let ay = dy / dr * a;
 		
-		physicsObject.velocity = {
-			x: physicsObject.velocity.x + deltaTime * ax,
-			y: physicsObject.velocity.y + deltaTime * ay
-		}
+		physicsObject.vx += deltaTime * ax,
+		physicsObject.vy += deltaTime * ay
 	}
 }

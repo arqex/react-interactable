@@ -9,11 +9,11 @@ export default class PhysicsFrictionBehavior extends PhysicsBehavior {
 	}
 
 	executeFrameWithDeltaTime(deltaTime, physicsObject) {
-		if ( !this.sWithinInfluence() ) return;
+		if ( !this.isWithinInfluence() ) return;
 
-		physicsObject.velocity = {
-			x: Math.pow(this.friction, 60.0 * deltaTime) * physicsObject.velocity.x,
-			y: Math.pow(this.friction, 60.0 * deltaTime) * physicsObject.velocity.y
-		}
+		let {vx, vy} = physicsObject
+		let pow = Math.pow(this.friction, 60.0 * deltaTime)
+		physicsObject.vx = pow * vx
+		physicsObject.vy = pow * vy
 	}
 }

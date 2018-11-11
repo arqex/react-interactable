@@ -19,12 +19,11 @@ export default class PhysicsBehavior {
 		let res = true
 		let target = this.target
 		let { minPoint, maxPoint } = this.influence
+		let { x, y } = target.getTranslation()
 
-		if (target.getTranslationX() < minPoint.x) res = false;
-		if (target.getTranslationX() > maxPoint.x) res = false;
-
-		if (target.getTranslationY() < minPoint.y) res = false;
-		if (target.getTranslationY() > maxPoint.y) res = false;
+		if (x < minPoint.x || x > maxPoint.x || y < minPoint.y || y > maxPoint.y) {
+			res = false
+		}
 
 		if ( this.haptics && this.lastIsWithinInfluenceInitialized) {
 			if (res != this.lastIsWithinInfluence) {
@@ -39,7 +38,7 @@ export default class PhysicsBehavior {
 	doHaptic() {
 		let time = Date.now()
 		if (time - lastHapticsAction > DURATION_BETWEEN_HAPTICS) {
-			// Vibrate here
+			// Vibrate here not implemented
 			lastHapticsAction = time;
 		}
 	}
