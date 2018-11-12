@@ -17,6 +17,7 @@ export default class InteractableView extends Component {
 		horizontalOnly: PropTypes.bool,
 		verticalOnly: PropTypes.bool,
 		dragWithSprings: PropTypes.bool,
+		dragEnabled: PropTypes.bool,
 		animatedValueX: PropTypes.instanceOf(Animated.Value),
 		animatedValueY: PropTypes.instanceOf(Animated.Value),
 		onSnap: PropTypes.func,
@@ -34,6 +35,7 @@ export default class InteractableView extends Component {
 		boundaries: {},
 		dragToss: .1,
 		dragWithSprings: false,
+		dragEnabled: true,
 		onSnap: function () { },
 		onSnapStart: function () { },
 		onStop: function () { },
@@ -42,7 +44,6 @@ export default class InteractableView extends Component {
 	}
 
 	initialPositionSet = false
-	dragEnable = true
 
 	constructor(props) {
 		super(props)
@@ -134,6 +135,8 @@ export default class InteractableView extends Component {
 			onMoveShouldSetPanResponderCapture: () => true,
 
 			onPanResponderGrant: (e, {x0, y0}) => {
+				if( !this.dragEnabled ) return;
+				
 				let {x,y} = this.getAnimated()
 				let offset = {x: x._value, y: y._value}
 				x.setOffset( offset.x )
@@ -145,6 +148,8 @@ export default class InteractableView extends Component {
 			},
 
 			onPanResponderMove: (evt, { dx, dy }) => {
+				if( !this.dragEnabled ) return;
+				
 				this.dragBehavior.anchorPoint = {
 					x: this.props.verticalOnly ? 0 : dx,
 					y: this.props.horizontalOnly ? 0 : dy
@@ -152,6 +157,8 @@ export default class InteractableView extends Component {
 			},
 
 			onPanResponderRelease: () => {
+				if( !this.dragEnabled ) return;
+				
 				this.endDrag()
 				let {x,y} = this.getAnimated()
 				x.flattenOffset()
@@ -369,19 +376,11 @@ export default class InteractableView extends Component {
 		}
 	}
 
-	setVerticalOnly(verticalOnly) {
-		this.verticalOnly = verticalOnly;
-	}
-
-	setHorizontalOnly(horizontalOnly) {
-		this.horizontalOnly = horizontalOnly;
-	}
-
-	setDragEnabled(dragEnabled) {
+	setDragEnabled( dragEnabled ) {
 		this.dragEnabled = dragEnabled;
 
 		if (this.dragBehavior && !dragEnabled) {
-			this.handleEndOfDrag();
+			this.endDrag();
 		}
 	}
 
@@ -394,23 +393,6 @@ export default class InteractableView extends Component {
 		this.boundaries = boundaries;
 		animator.removeBehavior(this.oldBoundariesBehavior);
 		this.addConstantBoundaries(boundaries);
-	}
-	setDragWithSprings( dragWithSprings) {
-		this.dragWithSprings = dragWithSprings;
-	}
-	setDragToss( dragToss) {
-		this.dragToss = dragToss;
-	}
-	setReportOnAnimatedEvents( reportOnAnimatedEvents) { 
-		this.reportOnAnimatedEvents = reportOnAnimatedEvents; 
-	}
-
-	setSnapPoints( snapPoints) {
-		this.snapPoints = snapPoints;
-	}
-
-	setAlertAreas( alertAreas) {
-		this.alertAreas = alertAreas;
 	}
 
 	setSpringsPoints( springPoints ) {
@@ -429,10 +411,10 @@ export default class InteractableView extends Component {
 	}
 
 	setVelocity( velocity ) {
-		if (dragBehavior != null) return;
+		if ( this.dragBehavior ) return;
 		this.velocity = velocity;
 		this.animator.setTargetVelocity(this, this.velocity);
-		this.handleEndOfDrag();
+		this.endDrag();
 	}
 
 	snapTo( index ) {
@@ -449,6 +431,6 @@ export default class InteractableView extends Component {
 		if ( this.dragBehavior ) return;
 
 		this.setTranslation( position )
-		this.handleEndOfDrag();
+		this.endDrag();
 	}
 }
