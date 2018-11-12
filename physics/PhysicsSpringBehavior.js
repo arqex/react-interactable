@@ -7,11 +7,12 @@ export default class PhysicsSpringBehavior extends PhysicsBehavior {
 		if (!this.isWithinInfluence()) return;
 		
 		let { target, anchorPoint, tension } = this
+		let {x,y} = target.getTranslation()
 
-		let dx = target.getTranslationX() - anchorPoint.x;
+		let dx = x - anchorPoint.x;
 		let ax = (-tension * dx) / physicsObject.mass;
 
-		let dy = target.getTranslationY() - anchorPoint.y;
+		let dy = y - anchorPoint.y;
 		let ay = (-tension * dy) / physicsObject.mass;
 
 		let {vx,vy} = physicsObject

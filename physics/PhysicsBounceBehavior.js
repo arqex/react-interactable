@@ -12,7 +12,7 @@ export default class PhysicsBounceBehavior extends PhysicsBehavior {
 		this.applyLimits();
 
 		let { minPoint, maxPoint, bounce, target } = this
-		let { x, y } = this.getTranslation()
+		let { x, y } = target.getTranslation()
 		let { vx, vy } = physicsObject
 
 		if (minPoint.x === x && vx < 0) {

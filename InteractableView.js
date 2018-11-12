@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Animated, PanResponder } from 'react-native'
+import InteractablePoint from './InteractablePoint'
 import PhysicsAnimator from './physics/PhysicsAnimator'
 import PhysicsAnchorBehavior from './physics/PhysicsAnchorBehavior'
 import PhysicsBounceBehavior from './physics/PhysicsBounceBehavior'
@@ -15,17 +16,24 @@ export default class InteractableView extends Component {
 		alertAreas: PropTypes.array,
 		horizontalOnly: PropTypes.bool,
 		verticalOnly: PropTypes.bool,
+		dragWithSprings: PropTypes.bool,
 		animatedValueX: PropTypes.instanceOf(Animated.Value),
 		animatedValueY: PropTypes.instanceOf(Animated.Value),
 		onSnap: PropTypes.func,
 		onSnapStart: PropTypes.func,
 		onEnd: PropTypes.func,
 		onDrag: PropTypes.func,
+		boundaries: PropTypes.object,
+		dragToss: PropTypes.number
 	}
 
 	static defaultProps = {
 		snapPoints: [],
 		frictionAreas: [],
+		alertAreas: [],
+		boundaries: {},
+		dragToss: .1,
+		dragWithSprings: false,
 		onSnap: function () { },
 		onSnapStart: function () { },
 		onStop: function () { },
@@ -48,11 +56,14 @@ export default class InteractableView extends Component {
 		// Cache when the view is inside of an alert area
 		this.insideAlertAreas = {}
 
+		// Save the last animation end position to report good coordinates in the events
+		this.lastEnd = {x: 0, y: 0}
+
 		this._pr = this.createPanResponder(props)
 	}
 
 	render() {
-		let { x, y } = this.animated
+		let { x, y } = this.getAnimated()
 		let position = {
 			transform: [
 				{ translateX: x }, { translateY: y }
@@ -67,11 +78,10 @@ export default class InteractableView extends Component {
 	}
 
 	getTranslation(){
-		let {animatedValueX, animatedValueY } = this.props
-
+		let animated = this.getAnimated()
 		return {
-			x: animatedValueX ? animatedValueX._value : this.animated.x._value,
-			y: animatedValueY ? animatedValueY._value : this.animated.y._value
+			x: animated.x._value,
+			y: animated.y._value
 		}
 	}
 
@@ -88,10 +98,12 @@ export default class InteractableView extends Component {
 		this.setTranslationY( ty )
 	}
 
-	createAnimator( props ){
+	createAnimator(){
 		return new PhysicsAnimator( this, {
 			onAnimatorPause: () => {
-				this.props.onStop( this.getTranslation() )
+				let { x, y } = this.getTranslation()
+				this.lastEnd = {x: Math.round(x), y: Math.round(y)}
+				this.props.onStop( this.lastEnd )
 			},
 			onAnimationFrame: () => {
 				this.reportAlertEvent( this.getTranslation() )
@@ -100,28 +112,50 @@ export default class InteractableView extends Component {
 	}
 
 	animate( dx, dy ){
+		if(!dx && !dy) return
+
 		let {x,y}  = this.getTranslation()
 		this.setTranslation( x + dx, y + dy ) 
 	}
 
-	createPanResponder(props) {
+	getAnimated(){
+		let { animatedValueX, animatedValueY } = this.props
+
+		return {
+			x: animatedValueX || this.animated.x ,
+			y: animatedValueY || this.animated.y
+		}
+	}
+
+	createPanResponder() {
+		
 		return PanResponder.create({
 			onMoveShouldSetResponderCapture: () => true,
 			onMoveShouldSetPanResponderCapture: () => true,
 
 			onPanResponderGrant: (e, {x0, y0}) => {
-				this.startDrag({x: x0, y: y0})
+				let {x,y} = this.getAnimated()
+				let offset = {x: x._value, y: y._value}
+				x.setOffset( offset.x )
+				y.setOffset( offset.y )
+				x.setValue( 0 )
+				y.setValue( 0 )
+				
+				this.startDrag( {x: x0, y: y0} )
 			},
 
-			onPanResponderMove: function (evt, { dx, dy }) {
-				this.dragBehavior.setAnchorPoint({
+			onPanResponderMove: (evt, { dx, dy }) => {
+				this.dragBehavior.anchorPoint = {
 					x: this.props.verticalOnly ? 0 : dx,
 					y: this.props.horizontalOnly ? 0 : dy
-				})
+				}
 			},
 
-			onPanResponderRelease: (e, { vx, vy }) => {
+			onPanResponderRelease: () => {
 				this.endDrag()
+				let {x,y} = this.getAnimated()
+				x.flattenOffset()
+				y.flattenOffset()
 			}
 		})
 	}
@@ -174,7 +208,7 @@ export default class InteractableView extends Component {
 
 	startDrag( ev ){
 		let pos = this.getTranslation()
-		this.props.onDrag({state: 'start', x: pos.x, y: pos.y})
+		this.props.onDrag({state: 'start', x: pos.x + this.lastEnd.x, y: pos.y + this.lastEnd.y})
 		this.dragStartLocation = { x: ev.x, y: ev.y }
 		this.animator.removeTempBehaviors();
 		this.animator.isDragging = true
@@ -186,28 +220,27 @@ export default class InteractableView extends Component {
 		this.dragBehavior = null;
 		this.animator.isDragging = false
 
+		let { animator, horizontalOnly, verticalOnly, dragWithSprings, boundaies } = this
 
-		let velocity = this.animator.getTargetVelocity(this);
-		if (this.horizontalOnly) velocity.y = 0;
-		if (this.verticalOnly) velocity.x = 0;
+
+		let velocity = animator.getVelocity();
+		if (horizontalOnly) velocity.y = 0;
+		if (verticalOnly) velocity.x = 0;
 		
-		let toss = 0.1;
-		if (this.dragWithSprings != null) toss = this.dragWithSprings.toss;
-
+		let toss = dragWithSprings && dragWithSprings.toss || this.props.dragToss;
 		let {x,y} = this.getTranslation()
 		let projectedCenter = {
-			x: x + toss * velocity.x,
-			y: y + toss * velocity.y
+			x: x + this.lastEnd.x + toss * velocity.x,
+			y: y + this.lastEnd.y + toss * velocity.y
 		};
 
-		let snapPoint = InteractablePoint.findClosestPoint(snapPoints, projectedCenter);
+		let snapPoint = InteractablePoint.findClosestPoint(this.props.snapPoints, projectedCenter);
 		let targetSnapPointId = snapPoint && snapPoint.id || "";
 
-		let pos = getTranslation();
-		this.props.onDrag({ state: 'end', x: pos.x, y: pos.y, targetSnapPointId })
+		this.props.onDrag({ state: 'end', x: x + this.lastEnd.x, y: y + this.lastEnd.y, targetSnapPointId })
 
 		this.addTempSnapToPointBehavior(snapPoint);
-		this.addTempBounceBehaviorWithBoundaries(this.boundaries);
+		this.addTempBounceBehaviorWithBoundaries( this.props.boundaries );
 	}
 
 	addTempSnapToPointBehavior( snapPoint ) {
@@ -219,12 +252,14 @@ export default class InteractableView extends Component {
 		onSnap({index, id: snapPoint.id});
 		onSnapStart({index, id: snapPoint.id});
 
-		let snapBehavior = new PhysicsSpringBehavior(this, snapPoint.positionWithOrigin());
-		snapBehavior.tension = snapPoint.tension;
+		let snapBehavior = new PhysicsSpringBehavior(this, {x: snapPoint.x, y: snapPoint.y} );
+		if( snapPoint.tension ){
+			snapBehavior.tension = snapPoint.tension;
+		}
 
 		this.animator.addTempBehavior(snapBehavior);
 		
-		let frictionBehavior = new PhysicsFrictionBehavior(this, snapPoint.damping || 0.7);
+		let frictionBehavior = new PhysicsFrictionBehavior(this, snapPoint.damping);
 		this.animator.addTempBehavior(frictionBehavior);
 	}
 
@@ -247,7 +282,7 @@ export default class InteractableView extends Component {
 		let {minPoint, maxPoint} = this.getBoundariesWithDefaults( boundaries )
 
 		this.animator.addTempBehavior(
-			new PhysicsBounceBehavior(this, minPoint, maxPoint, boundaries.getBounce(), boundaries.isHaptic())
+			new PhysicsBounceBehavior(this, minPoint, maxPoint, boundaries.bounce )
 		);
 	}
 
@@ -256,7 +291,7 @@ export default class InteractableView extends Component {
 
 		let { minPoint, maxPoint } = this.getBoundariesWithDefaults(boundaries)
 
-		let bounceBehavior = new PhysicsBounceBehavior(this, minPoint, maxPoint, 0, boundaries.isHaptic());
+		let bounceBehavior = new PhysicsBounceBehavior( this, minPoint, maxPoint, 0 );
 		this.animator.addBehavior(bounceBehavior);
 		this.oldBoundariesBehavior = bounceBehavior;
 	}

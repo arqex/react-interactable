@@ -4,7 +4,7 @@ const ANIMATOR_PAUSE_ZERO_VELOCITY = 1.0;
 
 export default class PhysicsAnimator {
 	behaviors = []
-	physicsObject = {vx: 0, vy: 0, mass: 0}
+	physicsObject = {vx: 0, vy: 0, mass: 1}
 	consecutiveFramesWithNoMovement = 0
 	screenScale = 1
 	lastFrameTS = 0
@@ -17,16 +17,16 @@ export default class PhysicsAnimator {
 		this.animatorListener = listener
 	}
 
-	doFrame( frameTimeNanos ) {
+	doFrame( frameTimeMillis ) {
 		if( !this.isRunning ) return;
 
 		if ( this.lastFrameTS ) {
 			this.animateFrameWithDeltaTime(
-				(frameTimeNanos - this.lastFrameTS) * 1e-9
+				(frameTimeMillis - this.lastFrameTS) * 1e-3
 			);
 		}
 
-		this.lastFrameTS = frameTimeNanos;
+		this.lastFrameTS = frameTimeMillis;
 		this.animatorListener.onAnimationFrame();
 		requestAnimationFrame( () => this.doFrame( Date.now() ) )
 	}
@@ -68,12 +68,15 @@ export default class PhysicsAnimator {
 		let behaviors = this.behaviors
 		let i = behaviors.length
 		while (i-- > 0) {
-			if (behaviors[i].temp) {
+			if (behaviors[i].isTemp) {
 				behaviors.splice(i, 1)
 			}
 		}
 	}
 
+	getVelocity(){ 
+		return { x: this.physicsObject.vx, y: this.physicsObject.vy }
+	}
 	ensureRunning() {
 		this.isRunning || this.startRunning()
 	}
@@ -87,6 +90,7 @@ export default class PhysicsAnimator {
 
 	stopRunning() {
 		this.removeTempBehaviors();
+		this.physicsObject = {vx: 0, vy: 0, mass: this.physicsObject.mass}
 		this.isRunning = false;
 	}
 
@@ -100,6 +104,7 @@ export default class PhysicsAnimator {
 
 		let dx = 0;
 		let {vx,vy} = physicsObject
+		
 		if ( Math.abs(vx) > ANIMATOR_PAUSE_ZERO_VELOCITY ) {
 			dx = deltaTime * vx;
 			hadMovement = true;
@@ -113,10 +118,7 @@ export default class PhysicsAnimator {
 		
 		View.animate( dx, dy )
 
-		let cfwnm = this.consecutiveFramesWithNoMovement
-		if( !hadMovement ){
-			cfwnm++
-		}
+		let cfwnm = hadMovement ? 0 : this.consecutiveFramesWithNoMovement + 1
 		this.consecutiveFramesWithNoMovement = cfwnm
 
 		if (cfwnm >= ANIMATOR_PAUSE_CONSECUTIVE_FRAMES && !this.isDragging) {

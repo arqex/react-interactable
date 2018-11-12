@@ -5,7 +5,7 @@ export default class PhysicsFrictionBehavior extends PhysicsBehavior {
 
 	constructor( target, friction ){
 		super( target, false )
-		this.friction = friction
+		this.friction = friction || 0.7
 	}
 
 	executeFrameWithDeltaTime(deltaTime, physicsObject) {

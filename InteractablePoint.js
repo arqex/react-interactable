@@ -16,10 +16,14 @@ export default class IntractablePoint {
 		return { x: this.x, y: this.y }
 	}
 
-	distanceFromPoint( {x, y} ){
-		if( this.x === Infinity && this.y === Infinity ) return Infinity
-		let dx = this.x === Infinity ? this.x : Math.abs(x - this.x)
-		let dy = this.y === Infinity ? this.x : Math.abs(y - this.y)
+	distanceFromPoint( point ){
+		return IntractablePoint.distanceFromPointRelative( this, point )
+	}
+
+	static distanceFromPointRelative( point, {x,y} ){
+		if( point.x === Infinity && point.y === Infinity ) return Infinity
+		let dx = point.x === Infinity ? point.x : Math.abs(x - point.x)
+		let dy = point.y === Infinity ? point.x : Math.abs(y - point.y)
 		
 		return Math.sqrt( dx*dx + dy*dy )
 	}
@@ -34,8 +38,8 @@ export default class IntractablePoint {
 	static findClosestPoint( pointArray, relativePoint ) {
 		let minDist = Infinity;
 		let closestPoint = null;
-		array.forEach( point => {
-			let curDist = point.distanceFromPoint(relativePoint);
+		pointArray.forEach( point => {
+			let curDist = IntractablePoint.distanceFromPointRelative( point, relativePoint );
 			if (curDist < minDist) {
 				minDist = curDist;
 				closestPoint = point;
