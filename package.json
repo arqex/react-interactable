@@ -7,5 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Javier Marquez",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react-art": "^16.6.3"
+  }
 }
