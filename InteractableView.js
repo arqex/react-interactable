@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import InteractablePoint from './InteractablePoint'
-import PhysicsAnimator from './physics/PhysicsAnimator'
-import PhysicsAnchorBehavior from './physics/PhysicsAnchorBehavior'
-import PhysicsBounceBehavior from './physics/PhysicsBounceBehavior'
-import PhysicsFrictionBehavior from './physics/PhysicsFrictionBehavior'
-import PhysicsGravityWellBehavior from './physics/PhysicsGravityWellBehavior'
-import PhysicsSpringBehavior from './physics/PhysicsSpringBehavior'
+import Animator from './Animator'
+import Utils from './Utils';
+
+const propBehaviors = {
+	frictionAreas: 'friction',
+	gravityPoints: 'gravity',
+	springPoints: 'spring',
+}
 
 export default function injectDependencies( Animated, PanResponder ){
 
@@ -15,6 +16,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			snapPoints: PropTypes.array,
 			frictionAreas: PropTypes.array,
 			alertAreas: PropTypes.array,
+			gravityPoints: PropTypes.array,
 			horizontalOnly: PropTypes.bool,
 			verticalOnly: PropTypes.bool,
 			dragWithSprings: PropTypes.bool,
@@ -26,6 +28,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			onEnd: PropTypes.func,
 			onDrag: PropTypes.func,
 			boundaries: PropTypes.object,
+			initialPosition: PropTypes.object,
 			dragToss: PropTypes.number
 		}
 
@@ -33,7 +36,9 @@ export default function injectDependencies( Animated, PanResponder ){
 			snapPoints: [],
 			frictionAreas: [],
 			alertAreas: [],
+			gravityPoints: [],
 			boundaries: {},
+			initialPosition: {x: 0, y: 0},
 			dragToss: .1,
 			dragWithSprings: false,
 			dragEnabled: true,
@@ -45,6 +50,7 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		initialPositionSet = false
+		isDragging = false
 
 		constructor(props) {
 			super(props)
@@ -61,9 +67,21 @@ export default function injectDependencies( Animated, PanResponder ){
 			// Save the last animation end position to report good coordinates in the events
 			this.lastEnd = {x: 0, y: 0}
 
+			// cache calculated areas
+			this.propAreas = {
+				alert: [],
+				boundaries: false
+			}
+
 			this._pr = this.createPanResponder(props)
 			
+			// Set behaviors and prop defaults
 			this.setPropBehaviours( {}, props )
+
+			// Set initial position
+			let {x,y} = this.getAnimated( props )
+			x.setValue( props.initialPosition.x )
+			y.setValue( props.initialPosition.y )
 		}
 
 		render() {
@@ -105,7 +123,7 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		createAnimator(){
-			return new PhysicsAnimator( this, {
+			return new Animator( this, {
 				onAnimatorPause: () => {
 					let { x, y } = this.getTranslation()
 					this.lastEnd = {x: Math.round(x), y: Math.round(y)}
@@ -124,8 +142,8 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.setTranslation( x + dx, y + dy ) 
 		}
 
-		getAnimated(){
-			let { animatedValueX, animatedValueY } = this.props
+		getAnimated( props ){
+			let { animatedValueX, animatedValueY } = (props || this.props)
 
 			return {
 				x: animatedValueX || this.animated.x ,
@@ -134,7 +152,6 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		createPanResponder() {
-			
 			return PanResponder.create({
 				onMoveShouldSetResponderCapture: () => true,
 				onMoveShouldSetPanResponderCapture: () => true,
@@ -151,10 +168,8 @@ export default function injectDependencies( Animated, PanResponder ){
 				},
 
 				onPanResponderMove: (evt, { dx, dy }) => {
-					this.dragBehavior.anchorPoint = {
-						x: this.props.verticalOnly ? 0 : dx,
-						y: this.props.horizontalOnly ? 0 : dy
-					}
+					!this.props.verticalOnly && (this.dragBehavior.x = dx);
+					!this.props.horizontalOnly && (this.dragBehavior.y = dy);
 				},
 
 				onPanResponderRelease: () => {
@@ -166,15 +181,14 @@ export default function injectDependencies( Animated, PanResponder ){
 			})
 		}
 
-
 		reportAlertEvent( position ){
 			let inside = this.insideAlertAreas
-			let {alertAreas, onAlert} = this.props
+			let { onAlert } = this.props
 
-			alertAreas.forEach( ({ influenceArea, id }) => {
-				if ( !influenceArea || !id ) return;
+			this.propAreas.alert.forEach( ({ influence, id }) => {
+				if ( !influence || !id ) return;
 
-				if (influenceArea.pointInside(position) ) {
+				if ( Utils.isPointInArea( position, influence ) ) {
 					if ( !inside[id] ) {
 						onAlert({id, value:"enter"});
 						inside[id] = 1;
@@ -186,39 +200,13 @@ export default function injectDependencies( Animated, PanResponder ){
 			})
 		}
 
-		addTempDragBehavior( drag ) {
-			var res;
-			let pos = this.getTranslation()
-
-			if ( !drag || drag.tension === Infinity ) {
-				res = new PhysicsAnchorBehavior( this, pos );
-			}
-			else {
-				res = new PhysicsSpringBehavior(this, pos);
-				res.tension = drag.tension;
-			}
-			this.animator.addTempBehavior( res );
-
-			if (drag && drag.damping > 0) {
-				let frictionBehavior = new PhysicsFrictionBehavior(this, drag.damping);
-				this.animator.addTempBehavior(frictionBehavior);
-			}
-
-			return res;
-		}
-
-		resetTouchEventFlags() {
-			this.isSwiping = false;
-			this.isChildIsScrollContainer = false;
-		}
-
 		startDrag( ev ){
 			let pos = this.getTranslation()
 			this.props.onDrag({state: 'start', x: pos.x + this.lastEnd.x, y: pos.y + this.lastEnd.y})
 			this.dragStartLocation = { x: ev.x, y: ev.y }
 			this.animator.removeTempBehaviors();
 			this.animator.isDragging = true
-			this.dragBehavior = this.addTempDragBehavior(this.dragWithSprings);
+			this.addTempDragBehavior( this.props.dragWithSprings );
 		}
 
 		endDrag(){
@@ -240,13 +228,28 @@ export default function injectDependencies( Animated, PanResponder ){
 				y: y + this.lastEnd.y + toss * velocity.y
 			};
 
-			let snapPoint = InteractablePoint.findClosestPoint(this.props.snapPoints, projectedCenter);
+			let snapPoint = Utils.findClosest(projectedCenter, this.props.snapPoints);
 			let targetSnapPointId = snapPoint && snapPoint.id || "";
 
 			this.props.onDrag({ state: 'end', x: x + this.lastEnd.x, y: y + this.lastEnd.y, targetSnapPointId })
 
 			this.addTempSnapToPointBehavior(snapPoint);
-			this.addTempBounceBehaviorWithBoundaries( this.props.boundaries );
+			this.addTempBoundaries();
+		}
+
+		addTempDragBehavior( drag ) {
+			let pos = this.getTranslation()
+
+			if ( !drag || drag.tension === Infinity ) {
+				this.dragBehavior = this.animator.addBehavior( 'anchor', pos, true )
+			}
+			else {
+				pos.tension = drag.tension || 300
+				this.dragBehavior = this.animator.addBehavior( 'spring', pos, true )
+				if( drag.damping ){
+					this.animator.addBehavior('friction', drag, true)
+				}
+			}
 		}
 
 		addTempSnapToPointBehavior( snapPoint ) {
@@ -258,121 +261,14 @@ export default function injectDependencies( Animated, PanResponder ){
 			onSnap({index, id: snapPoint.id});
 			onSnapStart({index, id: snapPoint.id});
 
-			let snapBehavior = new PhysicsSpringBehavior(this, {x: snapPoint.x, y: snapPoint.y} );
-			if( snapPoint.tension ){
-				snapBehavior.tension = snapPoint.tension;
+			let springOptions = {
+				damping: .7,
+				tension: 300,
+				...snapPoint
 			}
 
-			this.animator.addTempBehavior(snapBehavior);
-			
-			let frictionBehavior = new PhysicsFrictionBehavior(this, snapPoint.damping);
-			this.animator.addTempBehavior(frictionBehavior);
-		}
+			this.addBehavior( 'spring', springOptions, true )
 
-		getBoundariesWithDefaults( boundaries ){
-			return {
-				minPoint: {
-					x: boundaries.left || -Infinity,
-					y: boundaries.top || -Infinity
-				},
-				maxPoint: {
-					x: boundaries.right || Infinity,
-					y: boundaries.bottom || Infinity
-				}
-			}
-		}
-
-		addTempBounceBehaviorWithBoundaries( boundaries ) {
-			if ( !boundaries ) return;
-
-			let {minPoint, maxPoint} = this.getBoundariesWithDefaults( boundaries )
-
-			this.animator.addTempBehavior(
-				new PhysicsBounceBehavior(this, minPoint, maxPoint, boundaries.bounce )
-			);
-		}
-
-		addConstantBoundaries(boundaries) {
-			if (!boundaries) return;
-
-			let { minPoint, maxPoint } = this.getBoundariesWithDefaults(boundaries)
-
-			let bounceBehavior = new PhysicsBounceBehavior( this, minPoint, maxPoint, 0 );
-			this.animator.addBehavior(bounceBehavior);
-			this.oldBoundariesBehavior = bounceBehavior;
-		}
-
-		addConstantSpringBehavior(point) {
-			let anchor = { x: point.x || Infinity, y: point.y || Infinity }
-
-			let springBehavior = new PhysicsSpringBehavior(this, anchor);
-			springBehavior.tension = point.tension;
-			springBehavior.setInfluence( this.influenceAreaFromPoint(point) );
-
-			this.animator.addBehavior(springBehavior);
-
-			if ( point.damping ) {
-				let frictionBehavior = new PhysicsFrictionBehavior(this, point.damping);
-				frictionBehavior.setInfluence( this.influenceAreaFromPoint(point) );
-
-				this.animator.addBehavior(frictionBehavior);
-			}
-		}
-
-		addConstantGravityBehavior( point ) {
-			let anchor = { x: point.x || Infinity, y: point.y || Infinity }
-
-			let gravityBehavior = new PhysicsGravityWellBehavior(this, anchor);
-
-			gravityBehavior.setStrength(point.strength);
-			gravityBehavior.setFalloff(point.falloff);
-
-			let influenceArea = this.influenceAreaFromPoint(point)
-			gravityBehavior.setInfluence( influenceArea );
-
-			this.animator.addBehavior(gravityBehavior);
-
-			if ( point.damping ) {
-				this.addFrictionBehavior(
-					point,
-					influenceArea || this.influenceAreaWithRadius(1.4 * point.falloff, anchor)
-				)
-			}
-		}
-
-
-		addFrictionBehavior( point, friction ) {
-			let frictionBehavior = new PhysicsFrictionBehavior(this, point.damping);
-			frictionBehavior.setInfluence( friction || this.influenceAreaFromPoint(point) );
-			this.animator.addBehavior(frictionBehavior);
-		}
-
-		addConstantFrictionBehavior( point ) {
-			return this.addFrictionBehavior( point )
-		}
-
-		influenceAreaFromPoint( point ) {
-			let {influenceArea} = point
-			if (!influenceArea) return;
-
-			return {
-				minPoint: {
-					x: influenceArea.left || -Infinity,
-					y: influenceArea.top || -Infinity
-				},
-				maxPoint: {
-					x: influenceArea.right || Infinity,
-					y: influenceArea.bottom || Infinity
-				}
-			}
-		}
-
-		influenceAreaWithRadius( radius, anchor) {
-			if (radius <= 0) return null;
-			return {
-				minPoint: {x: anchor.x - radius, y: anchor.y - radius},
-				maxPoint: {x: anchor.x + radius, y: anchor.y + radius}
-			}
 		}
 
 		setDragEnabled( dragEnabled ) {
@@ -388,27 +284,6 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.setTranslation( initialPosition )
 		}
 
-		setBoundaries( boundaries) {
-			this.boundaries = boundaries;
-			animator.removeBehavior(this.oldBoundariesBehavior);
-			this.addConstantBoundaries(boundaries);
-		}
-
-		setSpringsPoints( springPoints ) {
-			this.springPoints = springPoints;
-			springPoints.forEach( point => this.addConstantSpringBehavior(point) )
-		}
-
-		setGravityPoints( gravityPoints ) {
-			this.gravityPoints = gravityPoints;
-			gravityPoints.forEach( point => this.addConstantGravityBehavior(point) )
-		}
-
-		setFrictionAreas( frictionAreas) {
-			this.frictionAreas = frictionAreas;
-			frictionAreas.forEach(point => this.addConstantFrictionBehavior(point))
-		}
-
 		setVelocity( velocity ) {
 			if ( this.dragBehavior ) return;
 			this.velocity = velocity;
@@ -417,13 +292,22 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		snapTo( index ) {
-			if( !this.snapPoints || !index || index >= this.snapPoints.length ) return;
+			let {snapPoints} = this.props;
+
+			if( !snapPoints || !index || index >= snapPoints.length ) return;
 			
 			this.animator.removeTempBehaviors();
 			this.dragBehavior = null;
 			let snapPoint = snapPoints[index]
+
 			this.addTempSnapToPointBehavior(snapPoint);
-			this.addTempBounceBehaviorWithBoundaries(this.boundaries);
+			this.addTempBoundaries();
+		}
+
+		addTempBoundaries(){
+			let boundaries = this.propAreas.boundaries;
+			if( !boundaries ) return;
+			this.animator.addBehavior( 'bounce', boundaries, true );
 		}
 
 		changePosition( position ) {
@@ -438,22 +322,50 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		setPropBehaviours( prevProps, props ){
+			// spring, gravity, friction
+			Object.keys( propBehaviors ).forEach( prop => {
+				if( prevProps[ prop ] !== props[ prop ] ){
+					this.animator.removeTypeBehaviors(propBehaviors[prop])
+					this.addTypeBehaviors( propBehaviors[prop], props[ prop ] )
+				}
+			})
 
-			if( prevProps.frictionAreas !== props.frictionAreas ){
-				this.animator.removeTypeBehaviors('friction')
-				props.frictionAreas && this.setFrictionAreas( props.frictionAreas )
+			if( prevProps.alertAreas !== props.alertAreas ){
+				let alertAreas = []
+				props.alertAreas.forEach( area => {
+					alertAreas.push({
+						id: area.id,
+						influence: Utils.createArea( area.influenceArea )
+					})
+				})
+				this.propAreas.alert = alertAreas
 			}
-			
-			
-			/*
-			snapPoints: [],
-			frictionAreas: [],
-			alertAreas: [],
-			boundaries: {},
-			dragToss: .1,
-			dragWithSprings: false,
-			dragEnabled: true,
-			*/
+
+			if( prevProps.boundaries !== props.boundaries ){
+				this.animator.removeBehavior( this.oldBoundariesBehavior )
+				if( props.boundaries ){
+					let bounce = {
+						bounce: props.boundaries.bounce,
+						influence: Utils.createArea( props.boundaries )
+					}
+					this.propAreas.boundaries = bounce
+					this.oldBoundariesBehavior = this.animator.addBehavior( 'bounce', bounce )
+				}
+				else {
+					this.propAreas.boundaries = false
+				}
+			}
+		}
+
+		addTypeBehaviors( type, behaviors, isTemp ){
+			behaviors.forEach( b => this.addBehavior( type, b, isTemp )	)
+		}
+
+		addBehavior( type, behavior, isTemp ){
+			this.animator.addBehavior( type, behavior, isTemp )
+			if( behavior.damping && type !== 'friction' ){
+				this.animator.addBehavior('friction', behavior, isTemp )
+			}
 		}
 	}
 }
