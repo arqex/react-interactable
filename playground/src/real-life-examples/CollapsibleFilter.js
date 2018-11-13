@@ -31,7 +31,7 @@ export default class CollapsibleFilter extends Component {
             })
           }]}>
             <TouchableOpacity onPress={() => alert('Tip: drag content up to see the filter collapse')}>
-              <Image style={styles.filterUp} source={require('../../assets/icon-up.png')} />
+              <Image style={styles.filterUp} source={require('assets/icon-up.png')} />
             </TouchableOpacity>
           </Animated.View>
           <TouchableOpacity onPress={() => alert('Anywhere pressed')}>
@@ -73,7 +73,7 @@ export default class CollapsibleFilter extends Component {
           <View style={styles.content}>
             <Text style={styles.panelTitle}>San Francisco Airport</Text>
             <Text style={styles.panelSubtitle}>International Airport - 40 miles away</Text>
-            <Image style={styles.photo} source={require('../../assets/airport-photo.jpg')} />
+            <Image style={styles.photo} source={require('assets/airport-photo.jpg')} />
             <View style={styles.panelButton}>
               <Text style={styles.panelButtonTitle}>Directions</Text>
             </View>

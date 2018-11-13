@@ -56,15 +56,17 @@ export default class example extends Component {
 
   render() {
     return (
-      <View style={styles.container} testID={'Overview'}>
-        <SafeAreaView style={styles.header}>
-          <TouchableOpacity onPress={this.onMenuPress.bind(this)}>
-            <Image style={styles.menuIcon} source={require('../assets/icon-menu.png')} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>React Native Interactable</Text>
-        </SafeAreaView>
-        <View style={styles.body}>
-          {this.renderContent()}
+      <View style={styles.app}>
+        <View style={styles.container} testID={'Overview'}>
+          <SafeAreaView style={styles.header}>
+            <TouchableOpacity onPress={this.onMenuPress.bind(this)}>
+              <Image style={styles.menuIcon} source={require('assets/icon-menu.png')} />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>React Native Interactable</Text>
+          </SafeAreaView>
+          <View style={styles.body}>
+            {this.renderContent()}
+          </View>
         </View>
       </View>
     );
@@ -175,10 +177,15 @@ export default class example extends Component {
 }
 
 const styles = StyleSheet.create({
+  app: {
+    backgroundColor: '#eee',
+    height: '100%'
+  },
   container: {
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: 'white',
+    width: 460
   },
   header: {
     height: isIphoneX ? 100 : (Platform.OS === 'ios') ? 70 : 60,
@@ -191,7 +198,9 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    zIndex: 1000
+    zIndex: 1000,
+    height: 580,
+    overflow: 'hidden'
   },
   menuContainer: {
     flex: 1,

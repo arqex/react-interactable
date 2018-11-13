@@ -16,7 +16,7 @@ export default class MapPanel extends Component {
     return (
       <View style={styles.container}>
 
-        <Image style={styles.map} source={require('../../assets/map-bg.jpg')} />
+        <Image style={styles.map} source={require('assets/map-bg.jpg')} />
 
 
         <View style={styles.panelContainer} pointerEvents={'box-none'}>
@@ -48,7 +48,7 @@ export default class MapPanel extends Component {
               <View style={styles.panelButton}>
                 <Text style={styles.panelButtonTitle}>Search Nearby</Text>
               </View>
-              <Image style={styles.photo} source={require('../../assets/airport-photo.jpg')} />
+              <Image style={styles.photo} source={require('assets/airport-photo.jpg')} />
             </View>
           </Interactable.View>
         </View>

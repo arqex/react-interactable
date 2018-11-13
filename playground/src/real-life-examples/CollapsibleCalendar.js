@@ -48,7 +48,7 @@ export default class CollapsibleFilter extends Component {
               }]
             }]}>THIS WEEK</Animated.Text>
           </View>
-          <Image style={styles.days} source={require('../../assets/calendar-header.png')} />
+          <Image style={styles.days} source={require('assets/calendar-header.png')} />
         </View>
 
         <Animated.Image
@@ -60,7 +60,7 @@ export default class CollapsibleFilter extends Component {
               })
             }]
           }]}
-          source={require('../../assets/calendar-body.png')} />
+          source={require('assets/calendar-body.png')} />
 
         <Interactable.View
           verticalOnly={true}

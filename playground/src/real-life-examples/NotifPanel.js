@@ -14,7 +14,7 @@ export default class NotifPanel extends Component {
 
         <View>
           <Text style={styles.contentTitle}>Content Title</Text>
-          <Image style={styles.contentImage} source={require('../../assets/tinder-photo.jpg')} />
+          <Image style={styles.contentImage} source={require('assets/tinder-photo.jpg')} />
           <Text style={styles.contentBody}>This is the content body</Text>
         </View>
 

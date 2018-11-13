@@ -34,7 +34,7 @@ export default class NowCard extends Component {
             })
           }]}>
             <Text style={styles.header}>Info for you</Text>
-            <Image style={styles.image} source={require('../../assets/card-photo.jpg')} />
+            <Image style={styles.image} source={require('assets/card-photo.jpg')} />
             <Text style={styles.title}>Card Title</Text>
             <Text style={styles.body}>This is the card body, it can be long</Text>
           </Animated.View>

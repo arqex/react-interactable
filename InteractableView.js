@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Animated, PanResponder } from 'react-native'
 import InteractablePoint from './InteractablePoint'
 import PhysicsAnimator from './physics/PhysicsAnimator'
 import PhysicsAnchorBehavior from './physics/PhysicsAnchorBehavior'
@@ -63,6 +62,8 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.lastEnd = {x: 0, y: 0}
 
 			this._pr = this.createPanResponder(props)
+			
+			this.setPropBehaviours( {}, props )
 		}
 
 		render() {
@@ -430,6 +431,29 @@ export default function injectDependencies( Animated, PanResponder ){
 
 			this.setTranslation( position )
 			this.endDrag();
+		}
+
+		componentDidUpdate( prevProps ){
+			this.setPropBehaviours( prevProps, this.props )
+		}
+
+		setPropBehaviours( prevProps, props ){
+
+			if( prevProps.frictionAreas !== props.frictionAreas ){
+				this.animator.removeTypeBehaviors('friction')
+				props.frictionAreas && this.setFrictionAreas( props.frictionAreas )
+			}
+			
+			
+			/*
+			snapPoints: [],
+			frictionAreas: [],
+			alertAreas: [],
+			boundaries: {},
+			dragToss: .1,
+			dragWithSprings: false,
+			dragEnabled: true,
+			*/
 		}
 	}
 }

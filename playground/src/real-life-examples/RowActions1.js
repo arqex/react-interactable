@@ -89,7 +89,7 @@ class Row extends Component {
 
         <View style={{position: 'absolute', right: 0, height: 75, flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity style={[styles.button]} onPress={this.onButtonPress.bind(this, 'trash')}>
-            <Animated.Image source={require('../../assets/icon-trash.png')} style={
+            <Animated.Image source={require('assets/icon-trash.png')} style={
               [styles.buttonImage, {
                 opacity: this._deltaX.interpolate({
                   inputRange: [-150, -115],
@@ -109,7 +109,7 @@ class Row extends Component {
             ]} />
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button]} onPress={this.onButtonPress.bind(this, 'snooze')}>
-            <Animated.Image source={require('../../assets/icon-clock.png')} style={
+            <Animated.Image source={require('assets/icon-clock.png')} style={
               [styles.buttonImage, {
                 opacity: this._deltaX.interpolate({
                   inputRange: [-75, -50],
@@ -132,7 +132,7 @@ class Row extends Component {
 
         <View style={{position: 'absolute', left: 0, height: 75, flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity style={[styles.button]} onPress={this.onButtonPress.bind(this, 'done')}>
-            <Animated.Image source={require('../../assets/icon-check.png')} style={
+            <Animated.Image source={require('assets/icon-check.png')} style={
               [styles.buttonImage, {
                 opacity: this._deltaX.interpolate({
                   inputRange: [50, 75],

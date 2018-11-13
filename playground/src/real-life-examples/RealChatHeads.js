@@ -20,7 +20,7 @@ export default class ChatHeads extends Component {
       <View style={styles.container}>
         <View style={styles.frame}>
           <Animated.Image
-            source={require('../../assets/chatheads-delete.png')}
+            source={require('assets/chatheads-delete.png')}
             style={[styles.marker, {top: 200*heightFactor}, {
               opacity: this._deltaY.interpolate({
                 inputRange: [-10*heightFactor, 50*heightFactor],
@@ -60,7 +60,7 @@ export default class ChatHeads extends Component {
                 scale: this._face1Scale
               }]
             }]}>
-              <Image style={styles.image} source={require('../../assets/chatheads-face1.jpg')} />
+              <Image style={styles.image} source={require('assets/chatheads-face1.jpg')} />
             </Animated.View>
           </Interactable.View>
         </View>
@@ -82,7 +82,7 @@ export default class ChatHeads extends Component {
                 scale: this._face2Scale
               }]
             }]}>
-              <Image style={styles.image} source={require('../../assets/chatheads-face2.jpg')} />
+              <Image style={styles.image} source={require('assets/chatheads-face2.jpg')} />
             </Animated.View>
           </Interactable.View>
         </View>

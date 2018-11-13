@@ -30,7 +30,7 @@ export default class TinderCard extends Component {
             }]
           }]}>
 
-            <Image style={styles.image} source={require('../../assets/tinder-photo.jpg')} />
+            <Image style={styles.image} source={require('assets/tinder-photo.jpg')} />
 
             <Animated.View style={[styles.overlay, {backgroundColor: '#de6d77'}, {
               opacity: this._deltaX.interpolate({

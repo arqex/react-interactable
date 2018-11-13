@@ -97,7 +97,7 @@ class Row extends Component {
             }
           ]}>
             <TouchableOpacity onPress={this.onButtonPress.bind(this, 'trash')} style={styles.button}>
-              <Image style={styles.button} source={require('../../assets/icon-trash.png')} />
+              <Image style={styles.button} source={require('assets/icon-trash.png')} />
             </TouchableOpacity>
           </Animated.View>
 
@@ -112,7 +112,7 @@ class Row extends Component {
             }
             ]}>
             <TouchableOpacity onPress={this.onButtonPress.bind(this, 'snooze')} style={styles.button}>
-              <Image style={styles.button} source={require('../../assets/icon-clock.png')} />
+              <Image style={styles.button} source={require('assets/icon-clock.png')} />
             </TouchableOpacity>
           </Animated.View>
         </View>
@@ -130,7 +130,7 @@ class Row extends Component {
             }
             ]}>
             <TouchableOpacity onPress={this.onButtonPress.bind(this, 'done')} style={styles.button}>
-              <Image style={styles.button} source={require('../../assets/icon-check.png')} />
+              <Image style={styles.button} source={require('assets/icon-check.png')} />
             </TouchableOpacity>
           </Animated.View>
         </View>

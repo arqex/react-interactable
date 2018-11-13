@@ -38,7 +38,7 @@ export default class SideMenu extends Component {
 
         <View style={styles.header}>
           <TouchableOpacity onPress={this.onMenuPress.bind(this)}>
-            <Image style={styles.menuIcon} source={require('../../assets/icon-menu.png')} />
+            <Image style={styles.menuIcon} source={require('assets/icon-menu.png')} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Side Menu Example</Text>
         </View>
