@@ -36,10 +36,12 @@ export default {
 		})
 		return closestPoint
 	},
-	getDistance( point, {x,y} ){
-		if( point.x === Infinity && point.y === Infinity ) return Infinity
-		let dx = point.x === Infinity ? point.x : Math.abs(x - point.x)
-		let dy = point.y === Infinity ? point.x : Math.abs(y - point.y)
+	getDistance( point, relative ){
+		let p = {x: point.x === undefined ? Infinity : point.x, y: point.y === undefined ? Infinity : point.y }
+		let r = {x: relative.x === undefined ? Infinity : relative.x, y: relative.y === undefined ? Infinity : relative.y }
+		if( p.x === Infinity && p.y === Infinity ) return Infinity
+		let dx = p.x === Infinity ? 0 : Math.abs(r.x - p.x)
+		let dy = p.y === Infinity ? 0 : Math.abs(r.y - p.y)
 		
 		return Math.sqrt( dx*dx + dy*dy )
 	},

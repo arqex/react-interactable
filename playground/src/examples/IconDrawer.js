@@ -70,8 +70,7 @@ export default class IconDrawer extends Component {
     );
   }
   onDrawerSnap(event) {
-    const snapPointId = event.nativeEvent.id;
-    console.log(`drawer state is ${snapPointId}`);
+    console.log(`drawer state is ${event.id}`);
   }
 }
 
