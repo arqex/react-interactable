@@ -71,8 +71,10 @@ export default class InteractableView extends Component {
 			]
 		}
 
+		let panHandlers = this.props.dragEnabled ? this._pr.panHandlers : {}
+
 		return (
-			<Animated.View style={position} {...this._pr.panHandlers}>
+			<Animated.View style={position} {...panHandlers}>
 				{this.props.children}
 			</Animated.View>
 		)
@@ -134,9 +136,7 @@ export default class InteractableView extends Component {
 			onMoveShouldSetResponderCapture: () => true,
 			onMoveShouldSetPanResponderCapture: () => true,
 
-			onPanResponderGrant: (e, {x0, y0}) => {
-				if( !this.dragEnabled ) return;
-				
+			onPanResponderGrant: (e, {x0, y0}) => {				
 				let {x,y} = this.getAnimated()
 				let offset = {x: x._value, y: y._value}
 				x.setOffset( offset.x )
@@ -148,8 +148,6 @@ export default class InteractableView extends Component {
 			},
 
 			onPanResponderMove: (evt, { dx, dy }) => {
-				if( !this.dragEnabled ) return;
-				
 				this.dragBehavior.anchorPoint = {
 					x: this.props.verticalOnly ? 0 : dx,
 					y: this.props.horizontalOnly ? 0 : dy
@@ -157,8 +155,6 @@ export default class InteractableView extends Component {
 			},
 
 			onPanResponderRelease: () => {
-				if( !this.dragEnabled ) return;
-				
 				this.endDrag()
 				let {x,y} = this.getAnimated()
 				x.flattenOffset()
