@@ -150,7 +150,7 @@ module.exports = {
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
-      'react-native-interactable': path.join(__dirname, '../../index.js'),
+      'react-native-interactable': path.join(__dirname, '../src/interactable/index.js'),
       'assets': path.join(__dirname, '../src/assets'),
     },
     plugins: [

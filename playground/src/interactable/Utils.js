@@ -27,13 +27,16 @@ export default {
 	findClosest: function( origin, points ){
 		let minDistance = Infinity;
 		let closestPoint = null;
+		let distances = []
 		points.forEach( point => {
 			let distance = this.getDistance( point, origin );
+			distances.push( distance )
 			if (distance < minDistance) {
 				minDistance = distance;
 				closestPoint = point;
 			}
 		})
+		console.log( distances )
 		return closestPoint
 	},
 	getDistance( point, relative ){

@@ -75,7 +75,7 @@ export default {
 			strength: options.strength || 400,
 			falloff: options.falloff || 40,
 			damping: options.damping || 0,
-			influence: options.damping ? Utils.createAreaFromRadius( 1.4 * options.falloff || 40, anchor ) : Utils.createArea( options.influenceArea || {} ),
+			influence: options.damping ? Utils.createAreaFromRadius( 1.4 * options.falloff || 40, options ) : Utils.createArea( options.influenceArea || {} ),
 			isTemp,
 			priority: 1
 		}),
@@ -94,7 +94,7 @@ export default {
 			let ax = dx / dr * a;
 			let ay = dy / dr * a;
 			
-			state.vx += deltaTime * ax,
+			state.vx += deltaTime * ax
 			state.vy += deltaTime * ay
 		}
 	},

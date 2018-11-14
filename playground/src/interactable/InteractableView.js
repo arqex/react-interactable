@@ -21,7 +21,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			verticalOnly: PropTypes.bool,
 			dragWithSprings: PropTypes.bool,
 			dragEnabled: PropTypes.bool,
-			// animatedValueX: PropTypes.instanceOf(Animated.Value),
+			animatedValueX: PropTypes.instanceOf(Animated.Value),
 			// animatedValueY: PropTypes.instanceOf(Animated.Value),
 			onSnap: PropTypes.func,
 			onSnapStart: PropTypes.func,
@@ -86,6 +86,11 @@ export default function injectDependencies( Animated, PanResponder ){
 
 		render() {
 			let { x, y } = this.getAnimated()
+			console.log( x === this.lastX, y === this.lastY)
+			this.lastX = x
+			this.lastY= y
+
+	
 			let position = {
 				transform: [
 					{ translateX: x }, { translateY: y }
@@ -159,6 +164,7 @@ export default function injectDependencies( Animated, PanResponder ){
 				onPanResponderGrant: (e, {x0, y0}) => {				
 					let {x,y} = this.getAnimated()
 					let offset = {x: x._value, y: y._value}
+					this.lastEnd = offset
 					x.setOffset( offset.x )
 					y.setOffset( offset.y )
 					x.setValue( 0 )
@@ -206,6 +212,8 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.dragStartLocation = { x: ev.x, y: ev.y }
 			this.animator.removeTempBehaviors();
 			this.animator.isDragging = true
+			this.animator.vx = 0
+			this.animator.vy = 0
 			this.addTempDragBehavior( this.props.dragWithSprings );
 		}
 
@@ -228,6 +236,7 @@ export default function injectDependencies( Animated, PanResponder ){
 				y: y + this.lastEnd.y + toss * velocity.y
 			};
 
+			console.log( 'pc', projectedCenter, velocity, this.lastEnd )
 			let snapPoint = Utils.findClosest(projectedCenter, this.props.snapPoints);
 			let targetSnapPointId = snapPoint && snapPoint.id || "";
 
@@ -318,6 +327,7 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		componentDidUpdate( prevProps ){
+			console.log('updated')
 			this.setPropBehaviours( prevProps, this.props )
 		}
 

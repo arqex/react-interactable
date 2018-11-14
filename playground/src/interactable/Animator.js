@@ -56,12 +56,13 @@ export default class PhysicsAnimator {
 			hadMovement = true;
 		}
 		
+		// console.log( {dx, dy} )
 		View.animate( dx, dy )
 
 		let cfwnm = hadMovement ? 0 : this.consecutiveFramesWithNoMovement + 1
 		this.consecutiveFramesWithNoMovement = cfwnm
 
-		if (cfwnm >= ANIMATOR_PAUSE_CONSECUTIVE_FRAMES && !this.isDragging) {
+		if (cfwnm >= ANIMATOR_PAUSE_CONSECUTIVE_FRAMES && !this.isDragging ) {
 			this.stopRunning();
 			this.animatorListener.onAnimatorPause();
 		}
