@@ -126,8 +126,8 @@ export default class MoreChatHeads extends Component {
   }
 
   onStopInteraction(event) {
-    const x = event.nativeEvent.x;
-    const y = event.nativeEvent.y;
+    const x = event.x;
+    const y = event.y;
     console.log(`stopped at x=${x}, y=${y}`);
   }
 

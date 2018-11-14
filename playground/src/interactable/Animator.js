@@ -37,9 +37,17 @@ export default class PhysicsAnimator {
 
 		let { physicsObject, behaviors, View } = this
 		let hadMovement = false
+		let {x,y} = View.getAnimated()
+
+		let coords = {
+			x: x._value + x._offset,
+			y: y._value + y._offset,
+			dx: x._value,
+			dy: y._value
+		}
 
 		behaviors.forEach( behavior => {
-			Behaviors[ behavior.type ].doFrame( behavior, deltaTime, physicsObject, View )
+			Behaviors[ behavior.type ].doFrame( behavior, deltaTime, physicsObject, coords, View )
 		})
 
 		let dx = 0;
@@ -76,7 +84,7 @@ export default class PhysicsAnimator {
 		let behaviors = this.behaviors
 		let idx = 0
 
-		while (behaviors.length > idx && behaviors[idx].priority < behavior.priority) {
+		while (behaviors.length > idx && behaviors[idx].priority <= behavior.priority) {
 			++idx;
 		}
 		behaviors.splice( idx, 0, behavior )

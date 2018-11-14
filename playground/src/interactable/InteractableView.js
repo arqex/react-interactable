@@ -19,10 +19,10 @@ export default function injectDependencies( Animated, PanResponder ){
 			gravityPoints: PropTypes.array,
 			horizontalOnly: PropTypes.bool,
 			verticalOnly: PropTypes.bool,
-			dragWithSprings: PropTypes.bool,
+			dragWithSpring: PropTypes.bool,
 			dragEnabled: PropTypes.bool,
 			animatedValueX: PropTypes.instanceOf(Animated.Value),
-			// animatedValueY: PropTypes.instanceOf(Animated.Value),
+			animatedValueY: PropTypes.instanceOf(Animated.Value),
 			onSnap: PropTypes.func,
 			onSnapStart: PropTypes.func,
 			onEnd: PropTypes.func,
@@ -40,7 +40,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			boundaries: {},
 			initialPosition: {x: 0, y: 0},
 			dragToss: .1,
-			dragWithSprings: false,
+			dragWithSpring: false,
 			dragEnabled: true,
 			onSnap: function () { },
 			onSnapStart: function () { },
@@ -86,7 +86,6 @@ export default function injectDependencies( Animated, PanResponder ){
 
 		render() {
 			let { x, y } = this.getAnimated()
-			console.log( x === this.lastX, y === this.lastY)
 			this.lastX = x
 			this.lastY= y
 
@@ -111,6 +110,13 @@ export default function injectDependencies( Animated, PanResponder ){
 			return {
 				x: animated.x._value,
 				y: animated.y._value
+			}
+		}
+		getAbsoluteTranslation(){
+			let {x,y} = this.getAnimated()
+			return {
+				x: x._value + x._offset,
+				y: y._value + y._offset
 			}
 		}
 
@@ -161,21 +167,12 @@ export default function injectDependencies( Animated, PanResponder ){
 				onMoveShouldSetResponderCapture: () => true,
 				onMoveShouldSetPanResponderCapture: () => true,
 
-				onPanResponderGrant: (e, {x0, y0}) => {				
-					let {x,y} = this.getAnimated()
-					let offset = {x: x._value, y: y._value}
-					this.lastEnd = offset
-					x.setOffset( offset.x )
-					y.setOffset( offset.y )
-					x.setValue( 0 )
-					y.setValue( 0 )
-					
+				onPanResponderGrant: (e, {x0, y0}) => {	
 					this.startDrag( {x: x0, y: y0} )
 				},
 
-				onPanResponderMove: (evt, { dx, dy }) => {
-					!this.props.verticalOnly && (this.dragBehavior.x = dx);
-					!this.props.horizontalOnly && (this.dragBehavior.y = dy);
+				onPanResponderMove: (evt, gesture ) => {
+					this.onDragging( gesture )
 				},
 
 				onPanResponderRelease: () => {
@@ -207,6 +204,30 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		startDrag( ev ){
+			// Prepare the animated
+			let {x,y} = this.getAnimated()
+			let offset = {x: x._value, y: y._value}
+			x.setOffset( offset.x )
+			y.setOffset( offset.y )
+			x.setValue( 0 )
+			y.setValue( 0 )
+
+			// Save the offset for triggering events with the right coordinates
+			this.lastEnd = offset
+
+			// Set relative boundaries to not to drag after them
+			if( this.propAreas.boundaries ){
+				let {minPoint, maxPoint} = this.propAreas.boundaries.influence
+				this.dragBoundaries = {
+					minPoint: { x: minPoint.x - offset.x, y: minPoint.y - offset.y },
+					maxPoint: { x: maxPoint.x - offset.x, y: maxPoint.y - offset.y }
+				}
+			}
+			else {
+				this.dragBoundaries = {}
+			}
+
+			// Prepare the animation
 			let pos = this.getTranslation()
 			this.props.onDrag({state: 'start', x: pos.x + this.lastEnd.x, y: pos.y + this.lastEnd.y})
 			this.dragStartLocation = { x: ev.x, y: ev.y }
@@ -214,7 +235,33 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.animator.isDragging = true
 			this.animator.vx = 0
 			this.animator.vy = 0
-			this.addTempDragBehavior( this.props.dragWithSprings );
+			this.addTempDragBehavior( this.props.dragWithSpring );
+
+			// Stop text selection
+			if (document) {
+				let styles = document.body.style
+				this.userSelectCache = styles.userSelect
+				styles.userSelect = "none"
+			}
+		}
+
+		onDragging({dx, dy}){
+			let {minPoint, maxPoint} = this.dragBoundaries
+			if( !this.props.verticalOnly ){
+				if (minPoint) {
+					if (minPoint.x > dx) dx = minPoint.x
+					if (maxPoint.x < dx) dx = maxPoint.x
+				}
+				this.dragBehavior.x0 = dx
+			}
+
+			if (!this.props.horizontalOnly) {
+				if (minPoint) {
+					if (minPoint.y > dy) dy = minPoint.y
+					if (maxPoint.y < dy) dy = maxPoint.y
+				}
+				this.dragBehavior.y0 = dy
+			}
 		}
 
 		endDrag(){
@@ -244,6 +291,11 @@ export default function injectDependencies( Animated, PanResponder ){
 
 			this.addTempSnapToPointBehavior(snapPoint);
 			this.addTempBoundaries();
+
+			// Restore text selection
+			if (document) {
+				document.body.userSelect = this.userSelectCache || ''
+			}
 		}
 
 		addTempDragBehavior( drag ) {
@@ -277,7 +329,6 @@ export default function injectDependencies( Animated, PanResponder ){
 			}
 
 			this.addBehavior( 'spring', springOptions, true )
-
 		}
 
 		setDragEnabled( dragEnabled ) {
@@ -327,7 +378,6 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		componentDidUpdate( prevProps ){
-			console.log('updated')
 			this.setPropBehaviours( prevProps, this.props )
 		}
 
@@ -355,7 +405,7 @@ export default function injectDependencies( Animated, PanResponder ){
 				this.animator.removeBehavior( this.oldBoundariesBehavior )
 				if( props.boundaries ){
 					let bounce = {
-						bounce: props.boundaries.bounce,
+						bounce: props.boundaries.bounce || 0,
 						influence: Utils.createArea( props.boundaries )
 					}
 					this.propAreas.boundaries = bounce

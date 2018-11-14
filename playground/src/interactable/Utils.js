@@ -2,12 +2,12 @@ export default {
 	createArea: function( boundaries ){
 		return {
 			minPoint: {
-				x: boundaries.left || -Infinity,
-				y: boundaries.top || -Infinity
+				x: boundaries.left === undefined ? -Infinity : boundaries.left,
+				y: boundaries.top === undefined ? -Infinity : boundaries.top
 			},
 			maxPoint: {
-				x: boundaries.right || Infinity,
-				y: boundaries.bottom || Infinity
+				x: boundaries.right === undefined ? Infinity : boundaries.right,
+				y: boundaries.bottom === undefined ? Infinity : boundaries.bottom
 			}
 		}
 	},
@@ -18,7 +18,7 @@ export default {
 		}
 	},
 	isPointInArea: function( {x, y}, area ){
-		if( !this.area ) return true
+		if( !area ) return true
 
 		let { minPoint, maxPoint } = area
 
