@@ -111,7 +111,7 @@ export default class MoreChatHeads extends Component {
         <View style={styles.markerContainer}><View style={[styles.marker, {top:  140}]} /></View>
         <Interactable.View
           snapPoints={ snap }
-          dragWithSpring={{tension: 2000, damping: 0.5}}
+          // dragWithSpring={{tension: 2000, damping: 0.5}}
           gravityPoints={ gravity }
           onStop={this.onStopInteraction}
           initialPosition={{x: -140, y: -250}}>

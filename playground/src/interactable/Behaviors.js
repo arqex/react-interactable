@@ -34,16 +34,16 @@ export default {
 
 			let { vx, vy } = state
 
-			if (minPoint.x >= x && vx < 0) {
+			if (minPoint.x > x && vx < 0) {
 				state.vx = -vx * bounce
 			}
-			if (minPoint.y >= y && vy < 0) {
+			if (minPoint.y > y && vy < 0) {
 				state.vy= -vy * bounce
 			}
-			if (maxPoint.x <= x && vx > 0) {
+			if (maxPoint.x < x && vx > 0) {
 				state.vx = -vx * bounce
 			}
-			if (maxPoint.y <= y && vy > 0) {
+			if (maxPoint.y < y && vy > 0) {
 				state.vy = -vy * bounce
 			}
 		}
@@ -81,8 +81,8 @@ export default {
 		doFrame: (options, deltaTime, state, coords) => {
 			if( !Utils.isPointInArea( coords, options.influence) ) return;
 
-			let dx = coords.dx - options.x0;
-			let dy = coords.dy - options.y0;
+			let dx = coords.x - options.x0;
+			let dy = coords.y - options.y0;
 			let dr = Math.sqrt(dx * dx + dy * dy);
 			if (!dr) return;
 

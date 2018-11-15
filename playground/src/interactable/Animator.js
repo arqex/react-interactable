@@ -45,7 +45,7 @@ export default class PhysicsAnimator {
 
 		let dx = 0;
 		let {vx,vy} = physicsObject
-		console.log( physicsObject )
+		// console.log( physicsObject )
 		
 		if ( Math.abs(vx) > ANIMATOR_PAUSE_ZERO_VELOCITY ) {
 			dx = deltaTime * vx;

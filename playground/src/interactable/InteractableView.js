@@ -207,20 +207,10 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.lastEnd = offset
 			console.log( offset )
 
-			// Set relative boundaries to not to drag after them
-			if( this.propAreas.boundaries ){
-				let {minPoint, maxPoint} = this.propAreas.boundaries.influence
-				this.dragBoundaries = {
-					minPoint: { x: minPoint.x - offset.x, y: minPoint.y - offset.y },
-					maxPoint: { x: maxPoint.x - offset.x, y: maxPoint.y - offset.y }
-				}
-			}
-			else {
-				this.dragBoundaries = {}
-			}
+			// Set boundaries to fast access
+			this.dragBoundaries = this.propAreas.boundaries ? this.propAreas.boundaries.influence : {}
 
 			// Prepare the animation
-			let pos = {x: 0, y: 0}
 			this.props.onDrag({state: 'start', x: offset.x, y: offset.y})
 			this.dragStartLocation = { x: ev.x, y: ev.y }
 			this.animator.removeTempBehaviors();
@@ -238,9 +228,11 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		onDragging({dx, dy}){
-			let animated = this.getAnimated()
-			let x = dx + animated.x._offset
-			let y = dy + animated.y._offset
+			let pos = this.getTranslation()
+			let x = dx + pos.x
+			let y = dy + pos.y
+			
+			console.log( this.dragBoundaries.minPoint )
 
 			let {minPoint, maxPoint} = this.dragBoundaries
 			if( !this.props.verticalOnly ){
@@ -267,14 +259,14 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.dragBehavior = null;
 			this.animator.isDragging = false
 
-			let { animator, horizontalOnly, verticalOnly, dragWithSprings, boundaies } = this
+			let { animator, horizontalOnly, verticalOnly, dragWithSprings } = this
 
 
 			let velocity = animator.getVelocity();
 			if (horizontalOnly) velocity.y = 0;
 			if (verticalOnly) velocity.x = 0;
 			
-			let toss = dragWithSprings && dragWithSprings.toss || this.props.dragToss;
+			let toss = (dragWithSprings && dragWithSprings.toss) || this.props.dragToss;
 			let {x,y} = this.getTranslation()
 			let projectedCenter = {
 				x: x + toss * velocity.x,
@@ -283,7 +275,7 @@ export default function injectDependencies( Animated, PanResponder ){
 
 			console.log( 'pc', projectedCenter, velocity)
 			let snapPoint = Utils.findClosest(projectedCenter, this.props.snapPoints);
-			let targetSnapPointId = snapPoint && snapPoint.id || "";
+			let targetSnapPointId = (snapPoint && snapPoint.id) || "";
 
 			this.props.onDrag({ state: 'end', x: x, y: y, targetSnapPointId })
 
