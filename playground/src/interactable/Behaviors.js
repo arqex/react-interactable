@@ -11,8 +11,8 @@ export default {
 		),
 		doFrame: (options, deltaTime, state, coords ) => {
 			// Velocity = dx / deltaTime
-			state.vx = (options.x0 - coords.dx) / deltaTime
-			state.vy = (options.y0 - coords.dy) / deltaTime
+			state.vx = (options.x0 - coords.x) / deltaTime
+			state.vy = (options.y0 - coords.y) / deltaTime
 		}
 	},
 
@@ -25,7 +25,7 @@ export default {
 			priority: 3,
 			isTemp
 		}),
-		doFrame: ({minPoint, maxPoint, bounce}, deltaTime, state, {x,y,dx,dy}, target ) => {
+		doFrame: ({minPoint, maxPoint, bounce}, deltaTime, state, {x,y}, target ) => {
 			// Apply limits
 			if (minPoint.x > x) target.setTranslationX(minPoint.x);
 			if (minPoint.y > y) target.setTranslationY(minPoint.y);
@@ -33,7 +33,6 @@ export default {
 			if (maxPoint.y < y) target.setTranslationY(maxPoint.y);
 
 			let { vx, vy } = state
-			console.log( vx, vy, bounce )
 
 			if (minPoint.x >= x && vx < 0) {
 				state.vx = -vx * bounce
@@ -109,16 +108,13 @@ export default {
 			priority: 1
 		}),
 		doFrame: ( options, deltaTime, state, coords) => {
-			console.log( coords )
 			if( !Utils.isPointInArea( coords, options.influence) ) return;
-
-			let {tension} = options
 	
-			let dx = coords.dx - options.x0;
-			let ax = (-tension * dx) / state.mass;
+			let dx = coords.x - options.x0;
+			let ax = (-1 * options.tension * dx) / state.mass;
 	
-			let dy = coords.dy - options.y0;
-			let ay = (-tension * dy) / state.mass;
+			let dy = coords.y - options.y0;
+			let ay = (-1 * options.tension * dy) / state.mass;
 			
 			state.vx = state.vx + deltaTime * ax
 			state.vy = state.vy + deltaTime * ay

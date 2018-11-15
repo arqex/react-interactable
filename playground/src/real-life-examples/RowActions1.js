@@ -176,7 +176,7 @@ class Row extends Component {
       </View>
     );
   }
-  onSnap({nativeEvent}) {
+  onSnap(nativeEvent) {
     const { index } = nativeEvent;
     this.setState({position: index});
   }
@@ -186,7 +186,7 @@ class Row extends Component {
       this.interactableElem.snapTo({index: 1});
     }
   }
-  onDrag({nativeEvent}) {
+  onDrag(nativeEvent) {
     const { state } = nativeEvent;
     if (state === 'start') {
       this.setState({isMoving: true});

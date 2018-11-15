@@ -19,7 +19,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			gravityPoints: PropTypes.array,
 			horizontalOnly: PropTypes.bool,
 			verticalOnly: PropTypes.bool,
-			dragWithSpring: PropTypes.bool,
+			dragWithSpring: PropTypes.objet,
 			dragEnabled: PropTypes.bool,
 			animatedValueX: PropTypes.instanceOf(Animated.Value),
 			animatedValueY: PropTypes.instanceOf(Animated.Value),
@@ -64,9 +64,6 @@ export default function injectDependencies( Animated, PanResponder ){
 			// Cache when the view is inside of an alert area
 			this.insideAlertAreas = {}
 
-			// Save the last animation end position to report good coordinates in the events
-			this.lastEnd = {x: 0, y: 0}
-
 			// cache calculated areas
 			this.propAreas = {
 				alert: [],
@@ -82,13 +79,13 @@ export default function injectDependencies( Animated, PanResponder ){
 			let {x,y} = this.getAnimated( props )
 			x.setValue( props.initialPosition.x )
 			y.setValue( props.initialPosition.y )
+			
+			// Save the last animation end position to report good coordinates in the events
+			this.lastEnd = {...this.initialPosition}
 		}
 
 		render() {
 			let { x, y } = this.getAnimated()
-			this.lastX = x
-			this.lastY= y
-
 	
 			let position = {
 				transform: [
@@ -106,14 +103,7 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		getTranslation(){
-			let animated = this.getAnimated()
-			return {
-				x: animated.x._value,
-				y: animated.y._value
-			}
-		}
-		getAbsoluteTranslation(){
-			let {x,y} = this.getAnimated()
+			let {x, y} = this.getAnimated()
 			return {
 				x: x._value + x._offset,
 				y: y._value + y._offset
@@ -121,11 +111,13 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		setTranslationX( tx ){
-			( this.props.animatedValueX || this.animated.x ).setValue( tx )
+			let animated = this.props.animatedValueX || this.animated.x
+			animated.setValue( tx - animated._offset )
 		}
 
 		setTranslationY(ty) {
-			( this.props.animatedValueY || this.animated.y ).setValue( ty )
+			let animated = this.props.animatedValueY || this.animated.y
+			animated.setValue( ty - animated._offset )
 		}
 
 		setTranslation( tx, ty ){
@@ -148,6 +140,8 @@ export default function injectDependencies( Animated, PanResponder ){
 
 		animate( dx, dy ){
 			if(!dx && !dy) return
+			let animated = this.getAnimated()
+			console.log( dx + animated.x._value + animated.x._offset )
 
 			let {x,y}  = this.getTranslation()
 			this.setTranslation( x + dx, y + dy ) 
@@ -177,9 +171,6 @@ export default function injectDependencies( Animated, PanResponder ){
 
 				onPanResponderRelease: () => {
 					this.endDrag()
-					let {x,y} = this.getAnimated()
-					x.flattenOffset()
-					y.flattenOffset()
 				}
 			})
 		}
@@ -214,6 +205,7 @@ export default function injectDependencies( Animated, PanResponder ){
 
 			// Save the offset for triggering events with the right coordinates
 			this.lastEnd = offset
+			console.log( offset )
 
 			// Set relative boundaries to not to drag after them
 			if( this.propAreas.boundaries ){
@@ -228,8 +220,8 @@ export default function injectDependencies( Animated, PanResponder ){
 			}
 
 			// Prepare the animation
-			let pos = this.getTranslation()
-			this.props.onDrag({state: 'start', x: pos.x + this.lastEnd.x, y: pos.y + this.lastEnd.y})
+			let pos = {x: 0, y: 0}
+			this.props.onDrag({state: 'start', x: offset.x, y: offset.y})
 			this.dragStartLocation = { x: ev.x, y: ev.y }
 			this.animator.removeTempBehaviors();
 			this.animator.isDragging = true
@@ -246,22 +238,28 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		onDragging({dx, dy}){
+			let animated = this.getAnimated()
+			let x = dx + animated.x._offset
+			let y = dy + animated.y._offset
+
 			let {minPoint, maxPoint} = this.dragBoundaries
 			if( !this.props.verticalOnly ){
 				if (minPoint) {
-					if (minPoint.x > dx) dx = minPoint.x
-					if (maxPoint.x < dx) dx = maxPoint.x
+					if (minPoint.x > x) x = minPoint.x
+					if (maxPoint.x < x) x = maxPoint.x
 				}
-				this.dragBehavior.x0 = dx
+				this.dragBehavior.x0 = x
 			}
 
 			if (!this.props.horizontalOnly) {
 				if (minPoint) {
-					if (minPoint.y > dy) dy = minPoint.y
-					if (maxPoint.y < dy) dy = maxPoint.y
+					if (minPoint.y > y) y = minPoint.y
+					if (maxPoint.y < y) y = maxPoint.y
 				}
-				this.dragBehavior.y0 = dy
+				this.dragBehavior.y0 = y
 			}
+
+			console.log( this.dragBehavior )
 		}
 
 		endDrag(){
@@ -279,18 +277,22 @@ export default function injectDependencies( Animated, PanResponder ){
 			let toss = dragWithSprings && dragWithSprings.toss || this.props.dragToss;
 			let {x,y} = this.getTranslation()
 			let projectedCenter = {
-				x: x + this.lastEnd.x + toss * velocity.x,
-				y: y + this.lastEnd.y + toss * velocity.y
+				x: x + toss * velocity.x,
+				y: y + toss * velocity.y
 			};
 
-			console.log( 'pc', projectedCenter, velocity, this.lastEnd )
+			console.log( 'pc', projectedCenter, velocity)
 			let snapPoint = Utils.findClosest(projectedCenter, this.props.snapPoints);
 			let targetSnapPointId = snapPoint && snapPoint.id || "";
 
-			this.props.onDrag({ state: 'end', x: x + this.lastEnd.x, y: y + this.lastEnd.y, targetSnapPointId })
+			this.props.onDrag({ state: 'end', x: x, y: y, targetSnapPointId })
 
 			this.addTempSnapToPointBehavior(snapPoint);
 			this.addTempBoundaries();
+
+			let animated = this.getAnimated()
+			animated.x.flattenOffset()
+			animated.y.flattenOffset()
 
 			// Restore text selection
 			if (document) {
@@ -314,7 +316,7 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		addTempSnapToPointBehavior( snapPoint ) {
-			if (!snapPoint == null)  return;
+			if (!snapPoint)  return;
 			let { snapPoints, onSnap, onSnapStart } = this.props
 
 			let index = snapPoints.indexOf(snapPoint)
@@ -346,8 +348,8 @@ export default function injectDependencies( Animated, PanResponder ){
 
 		setVelocity( velocity ) {
 			if ( this.dragBehavior ) return;
-			this.velocity = velocity;
-			this.animator.setTargetVelocity(this, this.velocity);
+			this.animator.vx = velocity.x
+			this.animator.vy = velocity.y
 			this.endDrag();
 		}
 

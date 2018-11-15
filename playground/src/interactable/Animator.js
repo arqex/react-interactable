@@ -37,14 +37,7 @@ export default class PhysicsAnimator {
 
 		let { physicsObject, behaviors, View } = this
 		let hadMovement = false
-		let {x,y} = View.getAnimated()
-
-		let coords = {
-			x: x._value + x._offset,
-			y: y._value + y._offset,
-			dx: x._value,
-			dy: y._value
-		}
+		let coords = View.getTranslation()
 
 		behaviors.forEach( behavior => {
 			Behaviors[ behavior.type ].doFrame( behavior, deltaTime, physicsObject, coords, View )
@@ -52,6 +45,7 @@ export default class PhysicsAnimator {
 
 		let dx = 0;
 		let {vx,vy} = physicsObject
+		console.log( physicsObject )
 		
 		if ( Math.abs(vx) > ANIMATOR_PAUSE_ZERO_VELOCITY ) {
 			dx = deltaTime * vx;

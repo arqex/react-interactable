@@ -69,42 +69,58 @@ export default class MoreChatHeads extends Component {
   }
 
   renderLocalizedSprings() {
+    let snap = [
+      {x: -140, y: 0}, {x: -140, y: -120}, {x: -140, y:  120}, {x: -140, y: -250}, {x: -140, y: 250},
+      {x:  140, y: 0}, {x:  140, y:  120}, {x:  140, y: -120}, {x:  140, y: -250}, {x:  140, y: 250}
+    ]
+    let spring = [
+      {x: 0, y:-120, tension: 4000, damping: 0.5, influenceArea: {left: -40, right: 40, top: -160, bottom: -80}, haptics: true},
+      {x: 0, y: 120, tension: 4000, damping: 0.5, influenceArea: {left: -40, right: 40, top:  80, bottom:  160}, haptics: true}
+    ]
     return (
       <View style={styles.container}>
         <View style={styles.markerContainer}><View style={[styles.marker, {top: -120}]} /></View>
         <View style={styles.markerContainer}><View style={[styles.marker, {top:  120}]} /></View>
         <Interactable.View
-          snapPoints={[
-            {x: -140, y: 0}, {x: -140, y: -120}, {x: -140, y:  120}, {x: -140, y: -250}, {x: -140, y: 250},
-            {x:  140, y: 0}, {x:  140, y:  120}, {x:  140, y: -120}, {x:  140, y: -250}, {x:  140, y: 250}]}
+          snapPoints={ snap }
           dragWithSpring={{tension: 2000, damping: 0.5}}
-          springPoints={[
-            {x: 0, y:-120, tension: 4000, damping: 0.5, influenceArea: {left: -40, right: 40, top: -160, bottom: -80}, haptics: true},
-            {x: 0, y: 120, tension: 4000, damping: 0.5, influenceArea: {left: -40, right: 40, top:  80, bottom:  160}, haptics: true}]}
+          springPoints={ spring }
           initialPosition={{x: -140, y: -250}}>
           <View style={styles.head} />
         </Interactable.View>
+        <View style={styles.phContainer}>
+          { this.renderPlaceholders( snap ) }
+          { this.renderPlaceholders( spring, true ) }
+        </View>
       </View>
     );
   }
 
   renderGravityWells() {
+    let snap = [
+      {x: -140, y: 0}, {x: -140, y: -120}, {x: -140, y:  120}, {x: -140, y: -250}, {x: -140, y: 250},
+      {x:  140, y: 0}, {x:  140, y:  120}, {x:  140, y: -120}, {x:  140, y: -250}, {x:  140, y: 250}
+    ]
+    let gravity = [
+      {x: 0, y:-120, strength:  8000, falloff: 40, damping: 0.5, haptics: true},
+      {x: 0, y: 120, strength: -8000, falloff: 40, damping: 0.5, haptics: true}
+    ]
     return (
       <View style={styles.container}>
         <View style={styles.markerContainer}><View style={[styles.marker, {top: -140}]} /></View>
         <View style={styles.markerContainer}><View style={[styles.marker, {top:  140}]} /></View>
         <Interactable.View
-          snapPoints={[
-            {x: -140, y: 0}, {x: -140, y: -120}, {x: -140, y:  120}, {x: -140, y: -250}, {x: -140, y: 250},
-            {x:  140, y: 0}, {x:  140, y:  120}, {x:  140, y: -120}, {x:  140, y: -250}, {x:  140, y: 250}]}
+          snapPoints={ snap }
           dragWithSpring={{tension: 2000, damping: 0.5}}
-          gravityPoints={[
-            {x: 0, y:-120, strength:  8000, falloff: 40, damping: 0.5, haptics: true},
-            {x: 0, y: 120, strength: -8000, falloff: 40, damping: 0.5, haptics: true}]}
+          gravityPoints={ gravity }
           onStop={this.onStopInteraction}
           initialPosition={{x: -140, y: -250}}>
           <View style={styles.head} />
         </Interactable.View>
+        <View style={styles.phContainer}>
+          { this.renderPlaceholders( snap ) }
+          { this.renderPlaceholders( gravity, true ) }
+        </View>
       </View>
     );
   }
@@ -129,6 +145,13 @@ export default class MoreChatHeads extends Component {
     const x = event.x;
     const y = event.y;
     console.log(`stopped at x=${x}, y=${y}`);
+  }
+  
+  renderPlaceholders( points, fill ){
+    this.idx = this.idx || 0;
+    return points.map( (point, i) => (
+      <View key={`ph${this.idx++}`} style={ [styles.placeholder, fill && styles.fill, {transform: [{ translateX: point.x }, {translateY: point.y}]}] }></View>
+    ))
   }
 
 }
@@ -170,5 +193,21 @@ const styles = StyleSheet.create({
     height: 70,
     backgroundColor: '#EE2C38',
     borderRadius: 35
+  },
+  phContainer: {
+    position: 'relative',
+    transform: [{translateX: -5}, {translateY: -40}]
+  },
+  placeholder: {
+    position: 'absolute',
+    top: 0, left: 0,
+    height: 10, width: 10,
+    borderRadius: 5,
+    borderWidth:2,
+    borderColor: '#ccc',
+    borderStyle: 'solid'
+  },
+  fill: {
+    backgroundColor: '#ccc'
   }
 });

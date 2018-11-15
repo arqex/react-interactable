@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: 'white',
-    width: 460
+    width: 480
   },
   header: {
     height: isIphoneX ? 100 : (Platform.OS === 'ios') ? 70 : 60,
