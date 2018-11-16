@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   playground: {
     marginTop: Screen.height <= 500 ? 0 : 80,
     padding: 20,
-    width: Screen.width - 40,
+    width: 480 - 40,
     backgroundColor: '#459FED',
     alignItems: 'stretch',
     alignSelf: 'center'

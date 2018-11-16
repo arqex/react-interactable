@@ -55,11 +55,14 @@ export default function injectDependencies( Animated, PanResponder ){
 		constructor(props) {
 			super(props)
 
+			let {x = 0, y = 0} = props.initialPosition
+
 			// In case animatedValueXY is not given
-			this.animated = new Animated.ValueXY(0,0)
+			this.animated = new Animated.ValueXY({x, y})
 
 			// This guy will apply all the physics
 			this.animator = this.createAnimator( props )
+			this.animator.debug = false
 
 			// Cache when the view is inside of an alert area
 			this.insideAlertAreas = {}
@@ -76,9 +79,11 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.setPropBehaviours( {}, props )
 
 			// Set initial position
-			let {x,y} = this.getAnimated( props )
-			x.setValue( props.initialPosition.x )
-			y.setValue( props.initialPosition.y )
+			let animated = this.getAnimated( props )
+			animated.x.setValue( x )
+			animated.y.setValue( y )
+			animated.x._startingValue = x
+			animated.x._startingValue = y
 			
 			// Save the last animation end position to report good coordinates in the events
 			this.lastEnd = {...this.initialPosition}
@@ -141,7 +146,7 @@ export default function injectDependencies( Animated, PanResponder ){
 		animate( dx, dy ){
 			if(!dx && !dy) return
 			let animated = this.getAnimated()
-			console.log( dx + animated.x._value + animated.x._offset )
+			console.log( dx + animated.x._value + animated.x._offset, this.animator.physicsObject )
 
 			let {x,y}  = this.getTranslation()
 			this.setTranslation( x + dx, y + dy ) 
@@ -228,11 +233,10 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		onDragging({dx, dy}){
-			let pos = this.getTranslation()
-			let x = dx + pos.x
-			let y = dy + pos.y
-			
-			console.log( this.dragBoundaries.minPoint )
+			let x = dx + this.lastEnd.x
+			let y = dy + this.lastEnd.y
+
+			console.log('diff', dx, dy)
 
 			let {minPoint, maxPoint} = this.dragBoundaries
 			if( !this.props.verticalOnly ){
@@ -333,15 +337,11 @@ export default function injectDependencies( Animated, PanResponder ){
 			}
 		}
 
-		setInitialPosition( initialPosition ) {
-			this.initialPosition = initialPosition;
-			this.setTranslation( initialPosition )
-		}
-
 		setVelocity( velocity ) {
 			if ( this.dragBehavior ) return;
-			this.animator.vx = velocity.x
-			this.animator.vy = velocity.y
+			let { physicsObject } = this.animator
+			physicsObject.vx = velocity.x
+			physicsObject.vy = velocity.y
 			this.endDrag();
 		}
 
@@ -367,7 +367,7 @@ export default function injectDependencies( Animated, PanResponder ){
 		changePosition( position ) {
 			if ( this.dragBehavior ) return;
 
-			this.setTranslation( position )
+			this.setTranslation( position.x, position.y )
 			this.endDrag();
 		}
 

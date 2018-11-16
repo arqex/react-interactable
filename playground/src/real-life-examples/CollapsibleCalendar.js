@@ -4,8 +4,8 @@ import Interactable from 'react-native-interactable';
 
 const Screen = Dimensions.get('window');
 const Calendar = {
-  width: Screen.width - 16,
-  height: (Screen.width -16) / 944 * 793
+  width: 480 - 16,
+  height: (480 -16) / 944 * 793
 }
 
 export default class CollapsibleFilter extends Component {
@@ -98,14 +98,14 @@ const styles = StyleSheet.create({
   },
   top: {
     backgroundColor: 'white',
-    width: Screen.width,
+    width: Calendar.width,
     alignItems: 'center',
     zIndex: 1000
   },
   header: {
     marginTop: 15,
     height: 40,
-    width: Screen.width,
+    width: Calendar.width,
     paddingLeft: 20
   },
   month: {
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   days: {
-    width: Screen.width - 16,
-    height: (Screen.width -16) / 944 * 65
+    width: Calendar.width - 16,
+    height: (Calendar.width -16) / 944 * 65
   },
   calendar: {
     width: Calendar.width,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    width: Screen.width,
+    width: Calendar.width,
     borderBottomWidth: 1,
     borderColor: '#eeeeee',
     height: 80,

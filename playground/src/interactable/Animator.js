@@ -31,6 +31,20 @@ export default class PhysicsAnimator {
 		this.animatorListener.onAnimationFrame();
 		requestAnimationFrame( () => this.doFrame( Date.now() ) )
 	}
+
+	debugStart( behaviour ){
+		if( !this.debug ) return;
+		this.debugB = behaviour
+		this.debugInitialV = {...this.physicsObject}
+	}
+
+	debugEnd(){
+		if( !this.debug ) return;
+		console.log( `Debug ${this.debugB.type}`, {
+			dvx: this.physicsObject.vx - this.debugInitialV.vx,
+			dvy: this.physicsObject.vy - this.debugInitialV.vy,
+		})
+	}
 	
 	animateFrameWithDeltaTime( deltaTime ) {
 		if( !deltaTime ) return;
@@ -40,7 +54,9 @@ export default class PhysicsAnimator {
 		let coords = View.getTranslation()
 
 		behaviors.forEach( behavior => {
+			this.debugStart( behavior )
 			Behaviors[ behavior.type ].doFrame( behavior, deltaTime, physicsObject, coords, View )
+			this.debugEnd()
 		})
 
 		let dx = 0;

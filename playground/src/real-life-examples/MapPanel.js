@@ -3,7 +3,7 @@ import { StyleSheet, View, Dimensions, Image, Text, Animated, TouchableOpacity }
 import Interactable from 'react-native-interactable';
 
 const Screen = {
-  width: Dimensions.get('window').width,
+  width: 480,
   height: Dimensions.get('window').height - 75
 }
 

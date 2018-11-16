@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   photo: {
-    width: Screen.width-40,
+    width: 480-40,
     height: 190,
     marginBottom: 20
   }

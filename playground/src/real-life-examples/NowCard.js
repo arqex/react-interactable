@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
   },
   card: {
-    width: Screen.width - 40,
+    width: 480 - 40,
     backgroundColor: 'white',
     borderRadius: 6,
     marginHorizontal: 20,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     elevation: 4
   },
   image: {
-    width: Screen.width - 40,
+    width: 480 - 40,
     height: Screen.height <= 500 ? 70 : 150
   },
   header: {
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   playground: {
     marginTop: Screen.height <= 500 ? 10 : 40,
     padding: 20,
-    width: Screen.width - 40,
+    width: 480 - 40,
     backgroundColor: '#459FED',
     alignItems: 'stretch'
   },

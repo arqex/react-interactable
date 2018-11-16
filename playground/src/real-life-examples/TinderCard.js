@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions, Image, Text, Animated } from 'react-native';
 import Interactable from 'react-native-interactable';
 
-const Screen = Dimensions.get('window');
+const Screen = {
+  width: 480,
+  height: Dimensions.get('window').height
+}
 
 export default class TinderCard extends Component {
   constructor(props) {

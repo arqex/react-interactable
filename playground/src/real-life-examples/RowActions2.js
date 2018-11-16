@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Image, Text, Animated, TouchableOpacity, Dimensions, Slider } from 'react-native';
 import Interactable from 'react-native-interactable';
 
-const Screen = Dimensions.get('window');
+const Screen = {
+  width: 480,
+  height: Dimensions.get('window')
+}
 
 export default class RowActions2 extends Component {
   constructor(props) {
