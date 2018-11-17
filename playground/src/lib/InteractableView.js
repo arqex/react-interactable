@@ -344,7 +344,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.endDrag();
 		}
 
-		snapTo( index ) {
+		snapTo( {index} ) {
 			let {snapPoints} = this.props;
 
 			if( !snapPoints || index === undefined || index >= snapPoints.length ) return;

@@ -67,7 +67,7 @@ export default class CollapsingHeaderWithScroll extends Component {
     );
   }
   onSnap(event) {
-    const { id } = event.nativeEvent;
+    const { id } = event;
     if (id === 'bottom') {
       this.setState({ canScroll: true });
     }
