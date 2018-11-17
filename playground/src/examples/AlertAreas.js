@@ -3,7 +3,7 @@ import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import Interactable from 'react-native-interactable';
 
 const Screen = {
-  width: Dimensions.get('window').width,
+  width: 480,
   height: Dimensions.get('window').height - 75
 };
 
@@ -43,16 +43,16 @@ export default class AlertAreas extends Component {
     );
   }
   onAlert(event) {
-    console.log('alert:', event.nativeEvent);
-    if(JSON.stringify(event.nativeEvent).includes("\"blue\":\"enter\"")){
+    console.log('alert:', event);
+    if(JSON.stringify(event).includes("\"blue\":\"enter\"")){
         this.setState({dragEnabled: false});
     }
-    if(JSON.stringify(event.nativeEvent).includes("\"blue\":\"leave\"")){
+    if(JSON.stringify(event).includes("\"blue\":\"leave\"")){
           this.setState({dragEnabled: true});
     }
   }
   onDrag(event) {
-    console.log('drag:', event.nativeEvent);
+    console.log('drag:', event);
   }
 }
 

@@ -1,8 +1,8 @@
 {
-  "name": "react-native-interactable-web",
-  "version": "0.1.0",
+  "name": "react-interactable",
+  "version": "0.3.0",
   "description": "A port of react-native-interactable to make it work on the web",
-  "main": "rniw.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

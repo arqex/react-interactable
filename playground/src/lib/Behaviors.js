@@ -74,24 +74,25 @@ export default {
 			strength: def(options.strength, 400),
 			falloff: def(options.falloff, 40),
 			damping: def(options.damping, 0),
-			influence: options.damping ? Utils.createAreaFromRadius( (1.4 * options.falloff) || 40, options ) : Utils.createArea( options.influenceArea || {} ),
+			influence: Utils.createArea(options.influenceArea || {}),
 			isTemp,
 			priority: 1
 		}),
 		doFrame: (options, deltaTime, state, coords) => {
 			if( !Utils.isPointInArea( coords, options.influence) ) return;
 
-			let dx = coords.x - options.x0;
-			let dy = coords.y - options.y0;
+			let dx = options.x0 !== Infinity ? coords.x - options.x0 : 0;
+			let dy = options.y0 !== Infinity ? coords.y - options.y0 : 0;
 			let dr = Math.sqrt(dx * dx + dy * dy);
-			if (!dr) return;
 
+			if (!dr) return;
 
 			let { falloff, strength } = options
 			let a = (-strength * dr * Math.exp(-0.5 * (dr * dr) / (falloff * falloff))) / state.mass;
+
 			let ax = dx / dr * a;
 			let ay = dy / dr * a;
-			
+
 			state.vx += deltaTime * ax
 			state.vy += deltaTime * ay
 		}

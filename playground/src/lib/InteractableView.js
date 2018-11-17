@@ -55,14 +55,14 @@ export default function injectDependencies( Animated, PanResponder ){
 		constructor(props) {
 			super(props)
 
-			let {x = 0, y = 0} = props.initialPosition
+			let { x=0, y=0 } = props.initialPosition
 
 			// In case animatedValueXY is not given
 			this.animated = new Animated.ValueXY({x, y})
 
 			// This guy will apply all the physics
 			this.animator = this.createAnimator( props )
-			this.animator.debug = false
+			this.animator.debug = 'gravity'
 
 			// Cache when the view is inside of an alert area
 			this.insideAlertAreas = {}
@@ -79,11 +79,11 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.setPropBehaviours( {}, props )
 
 			// Set initial position
-			let animated = this.getAnimated( props )
+			let animated  = this.getAnimated( props )
 			animated.x.setValue( x )
-			animated.y.setValue( y )
+			animated.y.setValue(y)
 			animated.x._startingValue = x
-			animated.x._startingValue = y
+			animated.y._startingValue = y
 			
 			// Save the last animation end position to report good coordinates in the events
 			this.lastEnd = {...this.initialPosition}
@@ -145,8 +145,8 @@ export default function injectDependencies( Animated, PanResponder ){
 
 		animate( dx, dy ){
 			if(!dx && !dy) return
-			let animated = this.getAnimated()
-			console.log( dx + animated.x._value + animated.x._offset, this.animator.physicsObject )
+			// let animated = this.getAnimated()
+			// console.log( dx + animated.x._value + animated.x._offset )
 
 			let {x,y}  = this.getTranslation()
 			this.setTranslation( x + dx, y + dy ) 
@@ -210,7 +210,7 @@ export default function injectDependencies( Animated, PanResponder ){
 
 			// Save the offset for triggering events with the right coordinates
 			this.lastEnd = offset
-			console.log( offset )
+			// console.log( offset )
 
 			// Set boundaries to fast access
 			this.dragBoundaries = this.propAreas.boundaries ? this.propAreas.boundaries.influence : {}
@@ -233,10 +233,11 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		onDragging({dx, dy}){
-			let x = dx + this.lastEnd.x
-			let y = dy + this.lastEnd.y
-
-			console.log('diff', dx, dy)
+			let pos = this.lastEnd
+			let x = dx + pos.x
+			let y = dy + pos.y
+			
+			// console.log( this.dragBoundaries.minPoint )
 
 			let {minPoint, maxPoint} = this.dragBoundaries
 			if( !this.props.verticalOnly ){
@@ -255,7 +256,7 @@ export default function injectDependencies( Animated, PanResponder ){
 				this.dragBehavior.y0 = y
 			}
 
-			console.log( this.dragBehavior )
+			// console.log( this.dragBehavior )
 		}
 
 		endDrag(){
@@ -264,7 +265,6 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.animator.isDragging = false
 
 			let { animator, horizontalOnly, verticalOnly, dragWithSprings } = this
-
 
 			let velocity = animator.getVelocity();
 			if (horizontalOnly) velocity.y = 0;
@@ -339,16 +339,15 @@ export default function injectDependencies( Animated, PanResponder ){
 
 		setVelocity( velocity ) {
 			if ( this.dragBehavior ) return;
-			let { physicsObject } = this.animator
-			physicsObject.vx = velocity.x
-			physicsObject.vy = velocity.y
+			this.animator.physicsObject.vx = velocity.x
+			this.animator.physicsObject.vy = velocity.y
 			this.endDrag();
 		}
 
 		snapTo( index ) {
 			let {snapPoints} = this.props;
 
-			if( !snapPoints || !index || index >= snapPoints.length ) return;
+			if( !snapPoints || index === undefined || index >= snapPoints.length ) return;
 			
 			this.animator.removeTempBehaviors();
 			this.dragBehavior = null;
@@ -418,7 +417,10 @@ export default function injectDependencies( Animated, PanResponder ){
 		addBehavior( type, behavior, isTemp ){
 			this.animator.addBehavior( type, behavior, isTemp )
 			if( behavior.damping && type !== 'friction' ){
-				this.animator.addBehavior('friction', behavior, isTemp )
+				let b = this.animator.addBehavior('friction', behavior, isTemp )
+				if( type === 'gravity' && !behavior.influenceArea ){
+					b.influence = Utils.createAreaFromRadius(1.4 * (behavior.falloff || 40), behavior)
+				}
 			}
 		}
 	}

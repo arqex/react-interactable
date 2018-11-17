@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Image, Animated, Dimensions } from 'react-native';
 import Interactable from 'react-native-interactable';
 
-const widthFactor = Dimensions.get('window').width / 375;
+const widthFactor = 480 / 375;
 const heightFactor = (Dimensions.get('window').height - 75) / 667;
 
 const showSecondFace = true;
@@ -92,8 +92,8 @@ export default class ChatHeads extends Component {
     );
   }
   onStopInteraction(event, scaleValue) {
-    const x = event.nativeEvent.x;
-    const y = event.nativeEvent.y;
+    const x = event.x;
+    const y = event.y;
     if (x > -10 && x < 10 && y < 210*heightFactor && y > 190*heightFactor) {
       Animated.timing(scaleValue, {toValue: 0, duration: 300}).start();
     }

@@ -32,14 +32,14 @@ export default class PhysicsAnimator {
 		requestAnimationFrame( () => this.doFrame( Date.now() ) )
 	}
 
-	debugStart( behaviour ){
-		if( !this.debug ) return;
-		this.debugB = behaviour
+	debugStart( behavior ){
+		if( this.debug !== true && this.debug !== behavior.type ) return;
+		this.debugB = behavior
 		this.debugInitialV = {...this.physicsObject}
 	}
 
-	debugEnd(){
-		if( !this.debug ) return;
+	debugEnd() {
+		if (!this.debugB || (this.debug !== true && this.debug !== this.debugB.type)) return;
 		console.log( `Debug ${this.debugB.type}`, {
 			dvx: this.physicsObject.vx - this.debugInitialV.vx,
 			dvy: this.physicsObject.vy - this.debugInitialV.vy,
