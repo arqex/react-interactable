@@ -30,7 +30,6 @@ import AlertAreas from './examples/AlertAreas';
 import CollapsingHeaderWithScroll from './examples/CollapsingHeaderWithScroll';
 
 // Real life Examples
-import Documentation from './real-life-examples/Documentation';
 import RowActions1 from './real-life-examples/RowActions1';
 import RowActions2 from './real-life-examples/RowActions2';
 import NowCard from './real-life-examples/NowCard';
@@ -40,7 +39,6 @@ import MapPanel from './real-life-examples/MapPanel';
 import CollapsibleFilter from './real-life-examples/CollapsibleFilter';
 import CollapsibleCalendar from './real-life-examples/CollapsibleCalendar';
 import RealChatHeads from './real-life-examples/RealChatHeads';
-import UxInspirations from './real-life-examples/UxInspirations';
 
 
 const {height, width} = Dimensions.get('window');
@@ -80,7 +78,7 @@ export default class example extends Component {
 
     return (
       <ScrollView style={styles.menuContainer}>
-        <TouchableOpacity onPress={this.onExamplePress.bind(this, Documentation)}>
+        <TouchableOpacity onPress={ () => window.open('https://github.com/wix/react-native-interactable/blob/master/README.md')}>
           <Text style={styles.button2}>Documentation</Text>
         </TouchableOpacity>
 
@@ -160,7 +158,7 @@ export default class example extends Component {
           <Text style={styles.button}>Real Chat Heads</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity onPress={this.onExamplePress.bind(this, UxInspirations)}>
+        <TouchableOpacity onPress={() => window.open('https://github.com/wix/react-native-interactable/blob/master/UX-INSPIRATIONS.md')}>
           <Text style={styles.button2}>UX Inspirations</Text>
         </TouchableOpacity>
       </ScrollView>
