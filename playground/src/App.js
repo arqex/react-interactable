@@ -57,7 +57,7 @@ export default class example extends Component {
       <View style={styles.app}>
         <View style={styles.container} testID={'Overview'}>
           <SafeAreaView style={styles.header}>
-            <TouchableOpacity onPress={this.onMenuPress.bind(this)}>
+            <TouchableOpacity style={{marginLeft: 20}} onPress={this.onMenuPress.bind(this)}>
               <Image style={styles.menuIcon} source={require('assets/icon-menu.png')} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>React Interactable</Text>

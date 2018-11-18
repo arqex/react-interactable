@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions, Image, Text, Animated, Slider } from 'react-native';
+import { StyleSheet, View, Dimensions, Image, Text, Animated } from 'react-native';
+import Slider from 'react-native-slider';
 import Interactable from 'react-native-interactable';
 
 const Screen = Dimensions.get('window');
