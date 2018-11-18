@@ -8,7 +8,7 @@ Just install via npm or yarn
 ```
 npm install --save react-interactable
 ```
-Special thanks to @souporserious for lending the npm package :)
+Special thanks to [@souporserious](https://github.com/souporserious) for lending the npm package :)
 
 
 [MIT licensed](LICENSE)

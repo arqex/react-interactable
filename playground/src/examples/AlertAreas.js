@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import Interactable from 'react-native-interactable';
-
-const Screen = {
-  width: 480,
-  height: Dimensions.get('window').height - 75
-};
+import Screen from '../Screen'
 
 export default class AlertAreas extends Component {
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Screen from './Screen'
 import {
   Platform,
   Dimensions,
@@ -183,7 +184,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: 'white',
-    width: 480
+    width: '100%',
+    maxWidth: 480,
+    maxHeight: Screen.height
   },
   header: {
     height: isIphoneX ? 100 : (Platform.OS === 'ios') ? 70 : 60,
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     zIndex: 1000,
-    height: 580,
+    height: Screen.height,
     overflow: 'hidden'
   },
   menuContainer: {
