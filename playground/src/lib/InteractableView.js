@@ -19,7 +19,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			gravityPoints: PropTypes.array,
 			horizontalOnly: PropTypes.bool,
 			verticalOnly: PropTypes.bool,
-			dragWithSpring: PropTypes.objet,
+			dragWithSpring: PropTypes.object,
 			dragEnabled: PropTypes.bool,
 			animatedValueX: PropTypes.instanceOf(Animated.Value),
 			animatedValueY: PropTypes.instanceOf(Animated.Value),
@@ -40,7 +40,6 @@ export default function injectDependencies( Animated, PanResponder ){
 			boundaries: {},
 			initialPosition: {x: 0, y: 0},
 			dragToss: .1,
-			dragWithSpring: false,
 			dragEnabled: true,
 			onSnap: function () { },
 			onSnapStart: function () { },
@@ -233,6 +232,9 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		onDragging({dx, dy}){
+			if( !this.animator.isDragging ) return false
+			if( !this.props.dragEnabled ) return this.endDrag()
+
 			let pos = this.lastEnd
 			let x = dx + pos.x
 			let y = dy + pos.y
@@ -329,14 +331,6 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.addBehavior( 'spring', springOptions, true )
 		}
 
-		setDragEnabled( dragEnabled ) {
-			this.dragEnabled = dragEnabled;
-
-			if (this.dragBehavior && !dragEnabled) {
-				this.endDrag();
-			}
-		}
-
 		setVelocity( velocity ) {
 			if ( this.dragBehavior ) return;
 			this.animator.physicsObject.vx = velocity.x
@@ -407,6 +401,10 @@ export default function injectDependencies( Animated, PanResponder ){
 				else {
 					this.propAreas.boundaries = false
 				}
+			}
+			
+			if (!this.props.dragEnabled && prevProps.dragEnabled && this.dragBehavior ){
+				this.endDrag()
 			}
 		}
 

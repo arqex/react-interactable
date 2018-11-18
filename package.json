@@ -4,6 +4,7 @@
   "description": "A port of react-native-interactable to make it work on the web",
   "main": "index.js",
   "scripts": {
+    "start": "node playground/scripts/start.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Javier Marquez",

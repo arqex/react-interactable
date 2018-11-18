@@ -26,7 +26,7 @@ export default class AlertAreas extends Component {
             </Text>
         </View>
       </View>
-            <Interactable.View
+        <Interactable.View
           snapPoints={[{x: -140, y: -250, id: 'testId'}, {x: 140, y: -250}, {x: -140, y: 250}, {x: 140, y: 250}]}
           dragEnabled={this.state.dragEnabled}
           alertAreas={[
@@ -44,11 +44,8 @@ export default class AlertAreas extends Component {
   }
   onAlert(event) {
     console.log('alert:', event);
-    if(JSON.stringify(event).includes("\"blue\":\"enter\"")){
-        this.setState({dragEnabled: false});
-    }
-    if(JSON.stringify(event).includes("\"blue\":\"leave\"")){
-          this.setState({dragEnabled: true});
+    if( event.id === 'blue' ){
+      this.setState({dragEnabled: event.value !== 'enter'})
     }
   }
   onDrag(event) {

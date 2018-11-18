@@ -62,7 +62,7 @@ export default class example extends Component {
             <TouchableOpacity onPress={this.onMenuPress.bind(this)}>
               <Image style={styles.menuIcon} source={require('assets/icon-menu.png')} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>React Native Interactable</Text>
+            <Text style={styles.headerTitle}>React Interactable</Text>
           </SafeAreaView>
           <View style={styles.body}>
             {this.renderContent()}
