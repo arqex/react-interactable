@@ -1,4 +1,4 @@
-## v0.3.1
+## v0.4.0
 * Fixes updating dragEnabled prop while dragging
 * Creates this changelog file
 * Playground: Alert areas example working ok
