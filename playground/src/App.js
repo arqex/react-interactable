@@ -80,7 +80,7 @@ export default class example extends Component {
     return (
       <ScrollView style={styles.menuContainer}>
         <TouchableOpacity onPress={ () => window.open('https://github.com/wix/react-native-interactable/blob/master/README.md')}>
-          <Text style={styles.button2}>Documentation</Text>
+          <Text style={[styles.button2, styles.doubleMargin]}>Documentation</Text>
         </TouchableOpacity>
 
         <Text style={styles.seperatorText}>Basic Examples</Text>
@@ -160,7 +160,10 @@ export default class example extends Component {
         </TouchableOpacity>
         
         <TouchableOpacity onPress={() => window.open('https://github.com/wix/react-native-interactable/blob/master/UX-INSPIRATIONS.md')}>
-          <Text style={styles.button2}>UX Inspirations</Text>
+          <Text style={[styles.button2]}>UX Inspirations</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => window.open('https://github.com/arqex/react-interactable')}>
+          <Text style={[styles.button2, styles.doubleMargin]}>Made with react-interactable</Text>
         </TouchableOpacity>
       </ScrollView>
     );
@@ -231,6 +234,9 @@ const styles = StyleSheet.create({
   button2: {
     color: '#F2564D',
     fontSize: 20,
+    marginBottom: 24
+  },
+  doubleMargin: {
     marginBottom: 48
   }
 });
