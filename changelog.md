@@ -1,3 +1,6 @@
+## Current changes
+* Playground: Fixes for mobile browsers
+
 ## v0.4.0
 * Fixes updating dragEnabled prop while dragging
 * Creates this changelog file
