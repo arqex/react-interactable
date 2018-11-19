@@ -1,6 +1,6 @@
 {
   "name": "react-interactable",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A port of react-native-interactable to make it work on the web",
   "main": "index.js",
   "scripts": {
