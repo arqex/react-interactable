@@ -1,4 +1,5 @@
-## Current changes
+## v0.5.0
+* Adds support for non-native apps
 * Playground: Fixes for mobile browsers
 
 ## v0.4.0
