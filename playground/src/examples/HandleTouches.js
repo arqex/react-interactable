@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, TouchableOpacity, Text } from 'react-native';
 import Interactable from 'react-native-interactable';
+import Screen from '../Screen'
 
 export default class HandleTouches extends Component {
   
@@ -15,10 +16,11 @@ export default class HandleTouches extends Component {
     );
   }
   renderRow = (data) => {
+    let move = Screen.width / 4 * 3
     return (
       <Interactable.View
         horizontalOnly={true}
-        snapPoints={[{x: 360},{x: 0},{x: -360}]}>
+        snapPoints={[{x: move},{x: 0},{x: -move}]}>
         <TouchableOpacity style={styles.card} onPress={this.onCardPress}>
           <TouchableOpacity style={styles.button} onPress={this.onButtonPress.bind(this, 'A')}>
             <Text style={{textAlign: 'center'}}>Button A</Text>

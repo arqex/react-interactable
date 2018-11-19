@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions, Image, Text, Animated, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, Text, Animated, TouchableOpacity } from 'react-native';
 import Interactable from 'react-native-interactable';
+import Screen from '../Screen'
 
-const Screen = {
-  width: 480,
-  height: Dimensions.get('window').height - 75
-}
+const height = Screen.height - 75
 
 export default class MapPanel extends Component {
   constructor(props) {
     super(props);
-    this._deltaY = new Animated.Value(Screen.height-100);
+    this._deltaY = new Animated.Value(height-100);
   }
   render() {
     return (
@@ -25,16 +23,16 @@ export default class MapPanel extends Component {
             style={[styles.panelContainer, {
             backgroundColor: 'black',
             opacity: this._deltaY.interpolate({
-              inputRange: [0, Screen.height-100],
+              inputRange: [0, height-100],
               outputRange: [0.5, 0],
               extrapolateRight: 'clamp'
             })
           }]} />
           <Interactable.View
             verticalOnly={true}
-            snapPoints={[{y: 40}, {y: Screen.height-300}, {y: Screen.height-100}]}
+            snapPoints={[{y: 40}, {y: height-300}, {y: height-100}]}
             boundaries={{top: -300}}
-            initialPosition={{y: Screen.height-100}}
+            initialPosition={{y: height-100}}
             animatedValueY={this._deltaY}>
             <View style={styles.panel}>
               <View style={styles.panelHeader}>
@@ -73,7 +71,7 @@ const styles = StyleSheet.create({
     right: 0
   },
   panel: {
-    height: Screen.height + 300,
+    height: height + 300,
     padding: 20,
     backgroundColor: '#f7f5eee8',
     borderTopLeftRadius: 20,
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   map: {
-    height: Screen.height,
+    height: height,
     width: Screen.width
   }
 });

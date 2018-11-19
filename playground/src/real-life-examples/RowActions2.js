@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, Text, Animated, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, View, Image, Text, Animated, TouchableOpacity } from 'react-native';
 import Slider from 'react-native-slider';
 import Interactable from 'react-native-interactable';
-
-const Screen = {
-  width: 480,
-  height: Dimensions.get('window')
-}
+import Screen from '../Screen'
 
 export default class RowActions2 extends Component {
   constructor(props) {

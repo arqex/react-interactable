@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, Animated, TouchableOpacity, TouchableHighlight, Dimensions } from 'react-native';
 import Slider from 'react-native-slider';
 import Interactable from 'react-native-interactable';
-
-const Screen = {
-  width: 480,
-  height: Dimensions.get('window').height
-}
+import Screen from '../Screen'
 
 export default class RowActions1 extends Component {
   constructor(props) {
@@ -244,7 +240,7 @@ const styles = StyleSheet.create({
   playground: {
     marginTop: Screen.height <= 500 ? 0 : 80,
     padding: 20,
-    width: 480 - 40,
+    width: Screen.width - 40,
     backgroundColor: '#459FED',
     alignItems: 'stretch',
     alignSelf: 'center'

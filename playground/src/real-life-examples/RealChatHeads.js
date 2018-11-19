@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, Animated, Dimensions } from 'react-native';
+import { StyleSheet, View, Image, Animated } from 'react-native';
 import Interactable from 'react-native-interactable';
+import Screen from '../Screen'
 
-const widthFactor = 480 / 375;
-const heightFactor = (Dimensions.get('window').height - 75) / 667;
+const widthFactor = Screen.width / 375;
+const heightFactor = (Screen.height - 75) / 667;
 
 const showSecondFace = true;
 

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions, Image, Text, Animated } from 'react-native';
 import Interactable from 'react-native-interactable';
+import Screen from '../Screen'
 
-const Screen = Dimensions.get('window');
 const Calendar = {
-  width: 480 - 16,
-  height: (480 -16) / 944 * 793
+  width: Screen.width - 16,
+  height: (Screen.width -16) / 944 * 793
 }
 
 export default class CollapsibleFilter extends Component {

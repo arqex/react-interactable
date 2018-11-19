@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions, Image, Text, Animated, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, Text, Animated, TouchableOpacity } from 'react-native';
 import Interactable from 'react-native-interactable';
-
-const Screen = Dimensions.get('window');
+import Screen from '../Screen'
 
 export default class CollapsibleFilter extends Component {
   constructor(props) {
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   photo: {
-    width: 480-40,
+    width: Screen.width-40,
     height: 190,
     marginBottom: 20
   }

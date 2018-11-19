@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions, Image, Text, Platform } from 'react-native';
 import Interactable from 'react-native-interactable';
+import Screen from '../Screen'
 
-const Screen = {
-  width: 480,
-  height: Dimensions.get('window').height - 75
-}
+let height  = Screen.height - 75
 
 export default class NotifPanel extends Component {
   render() {
@@ -21,16 +19,16 @@ export default class NotifPanel extends Component {
         <View style={styles.panelContainer}>
           <Interactable.View
             verticalOnly={true}
-            snapPoints={[{y: 0, tension: 0, damping: 1}, {y: -Screen.height + 80}]}
-            gravityPoints={[{y: 0, strength: 220, falloff: Screen.height*8, damping: 0.7, influenceArea: {top: (-Screen.height + 80) * 0.5}}]}
-            initialPosition={{y: -Screen.height + 80}}
-            boundaries={{top: -Screen.height, bottom: 0, bounce: 2, haptics: true}}>
+            snapPoints={[{y: 0, tension: 0, damping: 1}, {y: -height + 80}]}
+            gravityPoints={[{y: 0, strength: 220, falloff: height*8, damping: 0.7, influenceArea: {top: (-height + 80) * 0.5}}]}
+            initialPosition={{y: -height + 80}}
+            boundaries={{top: -height, bottom: 0, bounce: 2, haptics: true}}>
             <View style={styles.panel}>
               <Text style={styles.panelHeader}>Today</Text>
               <Notification title='First Notification' body='This is the body of the first notification' />
               <Notification title='Second Notification' body='This is the body of the 2nd notification' />
               <Notification title='Third Notification' body='This is the body of the 3rd notification' />
-              {Screen.height <= 500-75 ? false :
+              {height <= 500-75 ? false :
                 <View>
                   <Text style={styles.panelHeader}>Yesterday</Text>
                   <Notification title='Fourth Notification' body='This is the body of the 4th notification' />
@@ -78,7 +76,7 @@ const styles = StyleSheet.create({
     right: 0
   },
   panel: {
-    height: Screen.height + 2,
+    height: height + 2,
     backgroundColor: '#182e43f0',
     padding: 15,
     paddingTop: 30,

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions, Image, Text, Animated } from 'react-native';
 import Slider from 'react-native-slider';
 import Interactable from 'react-native-interactable';
-
-const Screen = Dimensions.get('window');
+import Screen from '../Screen'
 
 export default class NowCard extends Component {
   constructor(props) {
@@ -15,15 +14,16 @@ export default class NowCard extends Component {
     };
   }
   render() {
+    let move = Screen.width / 6 * 5
     return (
       <View style={styles.container}>
 
         <Interactable.View
           horizontalOnly={true}
           snapPoints={[
-            {x: 360},
+            {x: move},
             {x: 0, damping: 1-this.state.damping, tension: this.state.tension},
-            {x: -360}
+            {x: -move}
           ]}
           animatedValueX={this._deltaX}>
           <Animated.View style={[styles.card, {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
   },
   card: {
-    width: 480 - 40,
+    width: Screen.width - 40,
     backgroundColor: 'white',
     borderRadius: 6,
     marginHorizontal: 20,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     elevation: 4
   },
   image: {
-    width: 480 - 40,
+    width: Screen.width - 40,
     height: Screen.height <= 500 ? 70 : 150
   },
   header: {
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   playground: {
     marginTop: Screen.height <= 500 ? 10 : 40,
     padding: 20,
-    width: 480 - 40,
+    width: Screen.width - 40,
     backgroundColor: '#459FED',
     alignItems: 'stretch'
   },

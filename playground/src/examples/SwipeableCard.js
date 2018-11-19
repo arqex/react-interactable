@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Interactable from 'react-native-interactable';
+import Screen from '../Screen'
 
 export default class SwipeableCard extends Component {
   render() {
+    let move = Screen.width / 4 * 3
     return (
       <View style={styles.container}>
 
@@ -11,9 +13,9 @@ export default class SwipeableCard extends Component {
           key="first"
           horizontalOnly={true}
           snapPoints={[
-            {x: 360},
+            {x: move},
             {x: 0, damping: 0.5},
-            {x: -360}
+            {x: -move}
           ]}>
           <View style={styles.card} />
         </Interactable.View>
@@ -22,9 +24,9 @@ export default class SwipeableCard extends Component {
           key="second"
           horizontalOnly={true}
           snapPoints={[
-            {x: 360},
+            {x: move},
             {x: 0},
-            {x: -360}
+            {x: -move}
           ]}>
           <View style={styles.card} />
         </Interactable.View>
@@ -33,9 +35,9 @@ export default class SwipeableCard extends Component {
           key="third"
           horizontalOnly={true}
           snapPoints={[
-            {x: 360},
+            {x: move},
             {x: 0, damping: 0.8},
-            {x: -360}
+            {x: -move}
           ]}>
           <View style={styles.card} />
         </Interactable.View>
