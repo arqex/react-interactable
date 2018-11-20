@@ -61,7 +61,6 @@ export default function injectDependencies( Animated, PanResponder ){
 
 			// This guy will apply all the physics
 			this.animator = this.createAnimator( props )
-			this.animator.debug = 'gravity'
 
 			// Cache when the view is inside of an alert area
 			this.insideAlertAreas = {}
@@ -139,7 +138,9 @@ export default function injectDependencies( Animated, PanResponder ){
 				onAnimationFrame: () => {
 					this.reportAlertEvent( this.getTranslation() )
 				}
-			})
+			},
+			false // Set true or behavior type to output debug info in the console
+			)
 		}
 
 		animate( dx, dy ){
@@ -279,7 +280,7 @@ export default function injectDependencies( Animated, PanResponder ){
 				y: y + toss * velocity.y
 			};
 
-			console.log( 'pc', projectedCenter, velocity)
+			// console.log( 'pc', projectedCenter, velocity)
 			let snapPoint = Utils.findClosest(projectedCenter, this.props.snapPoints);
 			let targetSnapPointId = (snapPoint && snapPoint.id) || "";
 

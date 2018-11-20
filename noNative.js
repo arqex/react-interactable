@@ -1,6 +1,2 @@
-import { Animated, PanResponder } from 'react-native-web'
-import injectDependencies from './playground/src/lib/InteractableView'
-
-export default {
-	View: injectDependencies(Animated, PanResponder)
-}
+import Interactable from './playground/src/react-interactable/noNative'
+export default Interactable

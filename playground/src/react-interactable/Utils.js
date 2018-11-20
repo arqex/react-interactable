@@ -36,7 +36,7 @@ export default {
 				closestPoint = point;
 			}
 		})
-		console.log( distances )
+		// console.log( distances )
 		return closestPoint
 	},
 	getDistance( point, relative ){

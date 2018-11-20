@@ -3,7 +3,7 @@ import Behaviors from './Behaviors'
 const ANIMATOR_PAUSE_CONSECUTIVE_FRAMES = 10;
 const ANIMATOR_PAUSE_ZERO_VELOCITY = 1.0;
 
-export default class PhysicsAnimator {
+class PhysicsAnimator {
 	behaviors = []
 	physicsObject = {vx: 0, vy: 0, mass: 1}
 	consecutiveFramesWithNoMovement = 0
@@ -13,9 +13,14 @@ export default class PhysicsAnimator {
 	ticking = false
 	isDragging = false
 
-	constructor( View, listener ){
+	constructor( View, listener, debug ){
 		this.View = View
 		this.animatorListener = listener
+		if( !debug ){
+			let nofn = function(){}
+			this.debugStart = nofn;
+			this.debugEnd = nofn;
+		}
 	}
 
 	doFrame( frameTimeMillis ) {
@@ -146,3 +151,5 @@ export default class PhysicsAnimator {
 		this.isRunning = false;
 	}
 }
+
+export default PhysicsAnimator
