@@ -1,10 +1,17 @@
+
+import { injectEventPluginsByName } from 'react-dom/unstable-native-dependencies'
+import ResponderEventPlugin from './vendor/ResponderEventPlugin'
+
 import Animated from 'animated/lib/targets/react-dom'
 import PanResponder from './vendor/PanResponder'
 import injectDependencies from './InteractableView'
+import AnimatedView from './AnimatedView'
 
-// Fake the View component
-Animated.View = Animated.div
+// Add responder events
+injectEventPluginsByName(ResponderEventPlugin)
+
+// Fake the Animated.View component
+Animated.View = AnimatedView
 
 let Interactable = injectDependencies( Animated, PanResponder ) 
-Interactable.View = Interactable
-export default Interactable
+export default {View: Interactable}
