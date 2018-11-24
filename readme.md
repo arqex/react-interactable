@@ -20,14 +20,16 @@ npm install --save react-interactable
 
 If we are using just plain React:
 ```
-npm install --save react-interactable animated
+npm install --save react-interactable animated react-panresponder-web
 ```
 
-[MIT licensed](LICENSE)
-[Changelog here](changelog.md)
 
 ## Credits
-	* [Wix](https://wix.com) team for the original [react-native-interactable](https://github.com/wix/react-native-interactable)
-	* [@necolas](https://github.com/necolas) for the awesome [react-native-web](https://github.com/necolas/react-native-web) from where I borrow some code for the not react-native version.
-	* Of course, [Facebook](https://facebook.com) team for its game changing [React](https://reactjs.org/).
-	* [@souporserious](https://github.com/souporserious) for lending the `react-interactable` npm package :)
+* [Wix](https://wix.com) team for the original [react-native-interactable](https://github.com/wix/react-native-interactable)
+* Of course, [Facebook](https://facebook.com) team for its game changing [React](https://reactjs.org/).
+* [@souporserious](https://github.com/souporserious) for lending the `react-interactable` npm package :)
+
+---
+
+* [MIT licensed](LICENSE)
+* [Changelog here](changelog.md)
