@@ -1,6 +1,6 @@
 {
   "name": "react-interactable",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "A port of react-native-interactable to make it work on the web",
   "main": "native.js",
   "scripts": {
@@ -16,13 +16,14 @@
   "peerDependencies": {
     "react": "^16.5",
     "react-dom": "^16.5",
-    "animated": "^0.2.2"
+    "animated": "^0.2.2",
+    "react-panresponder-web": "^1.0.1"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/arqex/react-interactable"
   },
   "devDependencies": {
-    "bili": "^3.4.1"
+    "bili": "^3.4.2"
   }
 }

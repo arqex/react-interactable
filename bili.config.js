@@ -6,9 +6,13 @@ module.exports = {
 		react: 'React',
 		animated: 'Animated',
 		'prop-types': 'PropTypes',
-		'react-native': 'ReactNative'
+		'react-native': 'ReactNative',
+		'react-dom': 'ReactDom',
+		'react-dom/unstable-native-dependencies': 'UnstableDependencies',
+		'react-panresponder-web': 'PanResponder',
+		'animated/lib/targets/react-dom': 'Animated'
 	},
 	external: ['react-native'],
-	banner: true,
+	banner: { name: '*//* eslint-disable */\n/*!\n * react-interactable' },
 	filename: 'interactable.[name][suffix].js'
 }

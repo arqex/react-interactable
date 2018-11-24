@@ -1,3 +1,8 @@
+## v0.6.0
+* ReactDom version working ok
+* Added dist files using bili
+* PanResponder for ReactDom extracted to its own repo
+
 ## v0.5.0
 * Adds support for non-native apps
 * Playground: Fixes for mobile browsers

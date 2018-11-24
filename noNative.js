@@ -1,2 +1,2 @@
-import Interactable from './playground/src/react-interactable/noNative'
+import Interactable from './dist/interactable.noNative'
 export default Interactable
