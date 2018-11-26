@@ -3,7 +3,6 @@
 .expo/
 .vscode/
 styleGuide
-dist
 stats.web.json
 stats.chrome.json
 
