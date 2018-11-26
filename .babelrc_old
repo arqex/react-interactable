@@ -1,8 +1,0 @@
-{
-  "presets": [
-    ["@babel/preset-env", { "target": "ie10"} ]
-  ],
-  "plugins": [
-    "@babel/plugin-transform-react-jsx"
-  ]
-}
