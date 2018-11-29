@@ -1,7 +1,7 @@
 /*!
  * *//* eslint-disable */
 /*!
- * react-interactable v0.6.0
+ * react-interactable v0.6.1
  * (c) 2018-present Javier Marquez
  * Released under the MIT License.
  */
@@ -318,11 +318,18 @@
       doFrame: function doFrame(options, deltaTime, state, coords) {
         if (!Utils.isPointInArea(coords, options.influence)) return;
         var dx = coords.x - options.x0;
-        var ax = -1 * options.tension * dx / state.mass;
+
+        if (dx) {
+          // time * acceleration
+          state.vx += deltaTime * (-1 * options.tension * dx / state.mass);
+        }
+
         var dy = coords.y - options.y0;
-        var ay = -1 * options.tension * dy / state.mass;
-        state.vx = state.vx + deltaTime * ax;
-        state.vy = state.vy + deltaTime * ay;
+
+        if (dy) {
+          // time * acceleration
+          state.vy += deltaTime * (-1 * options.tension * dy / state.mass);
+        }
       }
     }
   };
@@ -420,7 +427,7 @@
         });
         var dx = 0;
         var vx = physicsObject.vx,
-            vy = physicsObject.vy; // console.log( physicsObject )
+            vy = physicsObject.vy;
 
         if (Math.abs(vx) > ANIMATOR_PAUSE_ZERO_VELOCITY) {
           dx = deltaTime * vx;
@@ -432,8 +439,7 @@
         if (Math.abs(vy) > ANIMATOR_PAUSE_ZERO_VELOCITY) {
           dy = deltaTime * vy;
           hadMovement = true;
-        } // console.log( {dx, dy} )
-
+        }
 
         View.animate(dx, dy);
         var cfwnm = hadMovement ? 0 : this.consecutiveFramesWithNoMovement + 1;
@@ -601,16 +607,17 @@
               x = _this$getAnimated.x,
               y = _this$getAnimated.y;
 
-          var position = {
+          var style = this.props.style;
+          var withPosition = Object.assign({
             transform: [{
               translateX: x
             }, {
               translateY: y
-            }]
-          };
+            }].concat(style.transform || [])
+          }, style);
           var panHandlers = this.props.dragEnabled ? this._pr.panHandlers : {};
           return React__default.createElement(Animated$$1.View, _extends({
-            style: position
+            style: withPosition
           }, panHandlers), this.props.children);
         }
       }, {
@@ -1047,17 +1054,17 @@
       onSnapStart: function onSnapStart() {},
       onStop: function onStop() {},
       onDrag: function onDrag() {},
-      onAlert: function onAlert() {}
+      onAlert: function onAlert() {},
+      style: {}
     }), _temp;
   }
 
   function AnimatedView(props) {
-    var style = props.style ? Object.assign({}, props.style) : {};
-
-    if (!style.display) {
-      style.display = 'inline-block';
-    }
-
+    var propStyles = props.style || {};
+    var style = Object.assign({
+      position: 'relative',
+      display: 'flex'
+    }, propStyles);
     return React__default.createElement(Animated.div, _extends({}, props, {
       style: style
     }), props.children);

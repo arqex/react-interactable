@@ -2,10 +2,8 @@ import React from 'react'
 import Animated from 'animated/lib/targets/react-dom'
 
 export default function AnimatedView(props) {
-  let style = props.style ? {...props.style} : {};
-  if( !style.display ){
-    style.display = 'inline-block'
-  }
+  let propStyles = props.style || {}
+  let style = { position: 'relative', display: 'flex', ...propStyles}
 
   return (
     <Animated.div {...props} style={style}>

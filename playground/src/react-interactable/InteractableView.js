@@ -46,6 +46,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			onStop: function () { },
 			onDrag: function () { },
 			onAlert: function () { },
+			style: {}
 		}
 
 		initialPositionSet = false
@@ -89,17 +90,16 @@ export default function injectDependencies( Animated, PanResponder ){
 
 		render() {
 			let { x, y } = this.getAnimated()
-	
-			let position = {
-				transform: [
-					{ translateX: x }, { translateY: y }
-				]
+			let style = this.props.style
+			let withPosition = {
+				transform: [{ translateX: x }, { translateY: y }].concat( style.transform || [] ),
+				...style
 			}
 
 			let panHandlers = this.props.dragEnabled ? this._pr.panHandlers : {}
 
 			return (
-				<Animated.View style={position} {...panHandlers}>
+				<Animated.View style={withPosition} {...panHandlers}>
 					{this.props.children}
 				</Animated.View>
 			)

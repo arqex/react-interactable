@@ -27,6 +27,7 @@ export default {
 		}),
 		doFrame: ({minPoint, maxPoint, bounce}, deltaTime, state, {x,y}, target ) => {
 			// Apply limits
+
 			if (minPoint.x > x) target.setTranslationX(minPoint.x);
 			if (minPoint.y > y) target.setTranslationY(minPoint.y);
 			if (maxPoint.x < x) target.setTranslationX(maxPoint.x);
@@ -112,13 +113,16 @@ export default {
 			if( !Utils.isPointInArea( coords, options.influence) ) return;
 	
 			let dx = coords.x - options.x0;
-			let ax = (-1 * options.tension * dx) / state.mass;
+			if( dx ){
+				// time * acceleration
+				state.vx += deltaTime * ((-1 * options.tension * dx) / state.mass)
+			}
 	
 			let dy = coords.y - options.y0;
-			let ay = (-1 * options.tension * dy) / state.mass;
-			
-			state.vx = state.vx + deltaTime * ax
-			state.vy = state.vy + deltaTime * ay
+			if( dy ){
+				// time * acceleration
+				state.vy += deltaTime * ((-1 * options.tension * dy) / state.mass)
+			}
 		}
 	}
 }
