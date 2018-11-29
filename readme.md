@@ -26,7 +26,7 @@ npm install --save react-interactable animated react-panresponder-web
 With an interactable view you can make any component react to dragging events. 
 
 **Using it with react-native-web**
-```
+```js
 // Import the libraries
 import React from 'react'
 import Interactable from 'react-interactable'
@@ -40,7 +40,7 @@ return (
 ```
 
 If we want to use `react-native-interactable` for iOS and Android versions and `react-interactable` for the dom seamlessly, we can add an alias to our webpack.config.js and just use `import Interactable from "react-native-interactable"` as we are used to do:
-```
+```js
 // Inside webpack.config.js
 module.exports = {
   //...
@@ -53,7 +53,7 @@ module.exports = {
 ```
 
 **Using it with plain react (react-dom)**
-```
+```js
 // Import the libraries, pay attention to require the no native version
 import React from 'react'
 import Interactable from 'react-interactable/noNative'
