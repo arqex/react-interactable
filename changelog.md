@@ -1,3 +1,7 @@
+## v0.6.2
+* Adds sourcemaps to the dist files.
+* The main file in the page is now pointing to the dist version.
+
 ## v0.6.1
 * Updates the position and display of the animated component mimic the react-native behavior
 * Pass styles down to the animated component

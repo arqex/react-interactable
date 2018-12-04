@@ -14,5 +14,6 @@ module.exports = {
 	},
 	external: ['react-native'],
 	banner: { name: '*//* eslint-disable */\n/*!\n * react-interactable' },
-	filename: 'interactable.[name][suffix].js'
+	filename: 'interactable.[name][suffix].js',
+	map: true
 }

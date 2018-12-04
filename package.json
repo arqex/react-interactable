@@ -1,8 +1,8 @@
 {
   "name": "react-interactable",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A port of react-native-interactable to make it work on the web",
-  "main": "native.js",
+  "main": "dist/interactable.native.js",
   "scripts": {
     "start": "cd playground && node ./scripts/start.js",
     "build": "./node_modules/.bin/bili",

@@ -1,7 +1,7 @@
 /*!
  * *//* eslint-disable */
 /*!
- * react-interactable v0.6.1
+ * react-interactable v0.6.2
  * (c) 2018-present Javier Marquez
  * Released under the MIT License.
  */
@@ -1079,3 +1079,4 @@
   return noNative;
 
 })));
+//# sourceMappingURL=interactable.noNative.js.map
