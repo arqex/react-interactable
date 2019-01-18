@@ -1,3 +1,6 @@
+## v0.6.3
+* Stop using document directly to make it work with react-native.
+
 ## v0.6.2
 * Adds sourcemaps to the dist files.
 * The main file in the page is now pointing to the dist version.

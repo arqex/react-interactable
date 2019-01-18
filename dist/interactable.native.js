@@ -1,7 +1,7 @@
 /*!
  * *//* eslint-disable */
 /*!
- * react-interactable v0.6.2
+ * react-interactable v0.6.3
  * (c) 2018-present Javier Marquez
  * Released under the MIT License.
  */
@@ -544,6 +544,7 @@
     gravityPoints: 'gravity',
     springPoints: 'spring'
   };
+  var isWeb = typeof document !== 'undefined';
   function injectDependencies(Animated, PanResponder) {
     var _class, _temp;
 
@@ -789,7 +790,7 @@
           this.animator.vy = 0;
           this.addTempDragBehavior(this.props.dragWithSpring); // Stop text selection
 
-          if (document) {
+          if (isWeb) {
             var styles = document.body.style;
             this.userSelectCache = styles.userSelect;
             styles.userSelect = "none";
@@ -867,7 +868,7 @@
           animated.x.flattenOffset();
           animated.y.flattenOffset(); // Restore text selection
 
-          if (document) {
+          if (isWeb) {
             document.body.userSelect = this.userSelectCache || '';
           }
         }

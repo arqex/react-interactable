@@ -9,6 +9,8 @@ const propBehaviors = {
 	springPoints: 'spring',
 }
 
+const isWeb = typeof document !== 'undefined'
+
 export default function injectDependencies( Animated, PanResponder ){
 
 	return class InteractableView extends Component {
@@ -225,7 +227,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			this.addTempDragBehavior( this.props.dragWithSpring );
 
 			// Stop text selection
-			if (document) {
+			if ( isWeb ) {
 				let styles = document.body.style
 				this.userSelectCache = styles.userSelect
 				styles.userSelect = "none"
@@ -294,7 +296,7 @@ export default function injectDependencies( Animated, PanResponder ){
 			animated.y.flattenOffset()
 
 			// Restore text selection
-			if (document) {
+			if ( isWeb ) {
 				document.body.userSelect = this.userSelectCache || ''
 			}
 		}
