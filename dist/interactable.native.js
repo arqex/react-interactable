@@ -1,8 +1,8 @@
 /*!
  * *//* eslint-disable */
 /*!
- * react-interactable v0.6.3
- * (c) 2018-present Javier Marquez
+ * react-interactable v0.6.4
+ * (c) 2019-present Javier Marquez
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -702,29 +702,34 @@
         value: function createPanResponder() {
           var _this3 = this;
 
+          var capturer = this.checkResponderCapture.bind(this);
           return PanResponder.create({
-            onMoveShouldSetResponderCapture: function onMoveShouldSetResponderCapture() {
-              return true;
-            },
-            onMoveShouldSetPanResponderCapture: function onMoveShouldSetPanResponderCapture() {
-              return true;
-            },
+            onMoveShouldSetResponderCapture: capturer,
+            onMoveShouldSetPanResponderCapture: capturer,
             onPanResponderGrant: function onPanResponderGrant(e, _ref2) {
               var x0 = _ref2.x0,
                   y0 = _ref2.y0;
+              _this3._captured = true;
 
               _this3.startDrag({
                 x: x0,
                 y: y0
               });
             },
-            onPanResponderMove: function onPanResponderMove(evt, gesture) {
+            onPanResponderMove: function onPanResponderMove(e, gesture) {
               _this3.onDragging(gesture);
             },
             onPanResponderRelease: function onPanResponderRelease() {
+              _this3._captured = false;
+
               _this3.endDrag();
             }
           });
+        }
+      }, {
+        key: "checkResponderCapture",
+        value: function checkResponderCapture(e, gesture) {
+          return this._captured || Math.abs(gesture.dx) > 5 || Math.abs(gesture.dy) > 5;
         }
       }, {
         key: "reportAlertEvent",

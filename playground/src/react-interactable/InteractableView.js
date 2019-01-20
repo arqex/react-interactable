@@ -164,22 +164,30 @@ export default function injectDependencies( Animated, PanResponder ){
 		}
 
 		createPanResponder() {
+			let capturer = this.checkResponderCapture.bind(this)
+			
 			return PanResponder.create({
-				onMoveShouldSetResponderCapture: () => true,
-				onMoveShouldSetPanResponderCapture: () => true,
+				onMoveShouldSetResponderCapture: capturer,
+				onMoveShouldSetPanResponderCapture: capturer,
 
 				onPanResponderGrant: (e, {x0, y0}) => {	
+					this._captured = true;
 					this.startDrag( {x: x0, y: y0} )
 				},
 
-				onPanResponderMove: (evt, gesture ) => {
+				onPanResponderMove: (e, gesture ) => {
 					this.onDragging( gesture )
 				},
 
 				onPanResponderRelease: () => {
+					this._captured = false;
 					this.endDrag()
 				}
 			})
+		}
+
+		checkResponderCapture( e, gesture ){
+			return this._captured || Math.abs( gesture.dx ) > 5 || Math.abs( gesture.dy ) > 5;
 		}
 
 		reportAlertEvent( position ){

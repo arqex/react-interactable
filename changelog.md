@@ -1,3 +1,6 @@
+## v0.6.4
+* Waits until the drag movement has gone 5 pts before capturing it.
+
 ## v0.6.3
 * Stop using document directly to make it work with react-native.
 
