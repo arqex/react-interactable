@@ -93,9 +93,11 @@ export default function injectDependencies( Animated, PanResponder ){
 		render() {
 			let { x, y } = this.getAnimated()
 			let style = this.props.style
+			const styleWithoutTransform = { ...style }
+			delete styleWithoutTransform.transform
 			let withPosition = {
 				transform: [{ translateX: x }, { translateY: y }].concat( style.transform || [] ),
-				...style
+				...styleWithoutTransform
 			}
 
 			let panHandlers = this.props.dragEnabled ? this._pr.panHandlers : {}
