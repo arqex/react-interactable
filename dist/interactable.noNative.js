@@ -1,7 +1,7 @@
 /*!
  * *//* eslint-disable */
 /*!
- * react-interactable v0.6.4
+ * react-interactable v0.6.5
  * (c) 2019-present Javier Marquez
  * Released under the MIT License.
  */
@@ -336,6 +336,12 @@
 
   var ANIMATOR_PAUSE_CONSECUTIVE_FRAMES = 10;
   var ANIMATOR_PAUSE_ZERO_VELOCITY = 1.0;
+
+  if (typeof requestAnimationFrame === 'undefined') {
+    // We just don't work without raf (maybe we are in the server)
+    // eslint-disable-next-line no-native-reassign
+    requestAnimationFrame = function requestAnimationFrame() {};
+  }
 
   var PhysicsAnimator =
   /*#__PURE__*/

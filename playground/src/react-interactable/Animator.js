@@ -3,6 +3,12 @@ import Behaviors from './Behaviors'
 const ANIMATOR_PAUSE_CONSECUTIVE_FRAMES = 10;
 const ANIMATOR_PAUSE_ZERO_VELOCITY = 1.0;
 
+if( typeof requestAnimationFrame === 'undefined' ){
+	// We just don't work without raf (maybe we are in the server)
+	// eslint-disable-next-line no-native-reassign
+	requestAnimationFrame = function(){}
+}
+
 class PhysicsAnimator {
 	behaviors = []
 	physicsObject = {vx: 0, vy: 0, mass: 1}

@@ -1,3 +1,7 @@
+## 0.6.5
+* Removes peer dependencies to let library get installed with latest react.
+* Adds a fake shim for `requestAnimationFrame` to let code compile in the server.
+
 ## v0.6.4
 * Waits until the drag movement has gone 5 pts before capturing it.
 

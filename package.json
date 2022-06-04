@@ -1,6 +1,6 @@
 {
   "name": "react-interactable",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "A port of react-native-interactable to make it work on the web",
   "main": "dist/interactable.native.js",
   "scripts": {
@@ -11,13 +11,7 @@
   "author": "Javier Marquez",
   "license": "MIT",
   "dependencies": {
-    "prop-types": "^15.5.7"
-  },
-  "peerDependencies": {
-    "react": "^16.5",
-    "react-dom": "^16.5",
-    "animated": "^0.2.2",
-    "react-panresponder-web": "^1.0.1"
+    "prop-types": "^15.8.1"
   },
   "repository": {
     "type": "git",
