@@ -1,7 +1,7 @@
 /*!
  * *//* eslint-disable */
 /*!
- * react-interactable v0.6.5
+ * react-interactable v0.6.6
  * (c) 2019-present Javier Marquez
  * Released under the MIT License.
  */
@@ -880,7 +880,7 @@
           animated.y.flattenOffset(); // Restore text selection
 
           if (isWeb) {
-            document.body.userSelect = this.userSelectCache || '';
+            document.body.style.userSelect = this.userSelectCache || '';
           }
         }
       }, {

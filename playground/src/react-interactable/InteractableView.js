@@ -305,7 +305,7 @@ export default function injectDependencies( Animated, PanResponder ){
 
 			// Restore text selection
 			if ( isWeb ) {
-				document.body.userSelect = this.userSelectCache || ''
+				document.body.style.userSelect = this.userSelectCache || ''
 			}
 		}
 
